@@ -1,5 +1,5 @@
 RESET:
-		push 	ax			;saving context of interrupted task
+		push 	ax				;saving context of interrupted task
 		push		bx
 		push 	cx
 		push 	dx
@@ -9,14 +9,14 @@ RESET:
 		push		es
 		push		ds
 	
-		sti					;enabling interrupts
+		sti						;enabling interrupts
 		call 	resetHandler	;calling C interrupt handler
-		cli					;disabling interrupts
+		cli						;disabling interrupts
 		
 		mov		al, 0x20		;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
 
-		pop		ds			;restoring context of interrupted task
+		pop		ds				;restoring context of interrupted task
 		pop		es
 		pop		bp
 		pop		di
@@ -29,7 +29,7 @@ RESET:
 		iret					;returning from ISR
 
 TICK:
-		push 	ax			;saving context of interrupted task
+		push 	ax				;saving context of interrupted task
 		push		bx
 		push 	cx
 		push 	dx
@@ -39,14 +39,14 @@ TICK:
 		push		es
 		push		ds
 
-		sti					;enabling interrupts
+		sti						;enabling interrupts
 		call		tickHandler	;calling C interrupt handler
-		cli					;disabling interrupts
+		cli						;disabling interrupts
 
 		mov al, 0x20			;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
 
-		pop		ds			;restoring context of interrupted task
+		pop		ds				;restoring context of interrupted task
 		pop		es
 		pop		bp
 		pop		di
@@ -59,7 +59,7 @@ TICK:
 		iret					;returning from ISR
 
 KEYBOARD:
-		push 	ax			;saving context of interrupted task
+		push 	ax				;saving context of interrupted task
 		push		bx
 		push 	cx
 		push 	dx
@@ -69,14 +69,14 @@ KEYBOARD:
 		push		es
 		push		ds
 
-		sti					;enabling interrupts
+		sti						;enabling interrupts
 		call		keyboardHandler ;calling C interrupt handler
-		cli					;disabling interrupts
+		cli						;disabling interrupts
 
 		mov al, 0x20			;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
 
-		pop		ds			;restoring context of interrupted task
+		pop		ds				;restoring context of interrupted task
 		pop		es
 		pop		bp
 		pop		di
