@@ -40,10 +40,8 @@ void YKEVentReset(YKEVENT* event, unsigned eventMask);
 typedef struct {
 	unsigned int tid;
 	unsigned int priority;
-	void* stackPointer;
-	void* programCounter;
+	void* stackPointer;	
 	unsigned int state;
-	int contextBuffer[];
 	TCB* next;
 	TCB* prev;
 }TCB;
