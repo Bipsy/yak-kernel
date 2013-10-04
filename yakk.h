@@ -1,3 +1,5 @@
+typedef null 0;
+
 //Kernel API
 void YKInitialize(void);
 
@@ -14,6 +16,10 @@ void YKDelayTask(unsigned count);
 void YKEnterISR(void);
 
 void YKExitISR(void);
+
+void YKScheduler(bool contextBeenSaved);
+
+void YKDispatcher(TCB* currentTask, TCB* readyTask, contextBeenSaved);
 
 void YKTickHandler(void);
 
@@ -40,7 +46,8 @@ void YKEVentReset(YKEVENT* event, unsigned eventMask);
 typedef struct {
 	unsigned int tid;
 	unsigned int priority;
-	void* stackPointer;	
+	void* stackPointer;
+	void* stackSegment;	
 	unsigned int state;
 	TCB* next;
 	TCB* prev;
