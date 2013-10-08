@@ -68,8 +68,7 @@ void YKIdleTask(void) {
 	while (1) {
 		int i;
 		i = 1;
-		i = 2;
-		i = 3;
+		YKIdleCount++;
 	}
 
 }
@@ -115,6 +114,27 @@ TCB* getNewTCB(void) {
 		print(TCBFullError, 17);		
 		return null;
 	}
+
+}
+
+void scheduler(void) {
+
+	YKEnterMutex();
+	TCB* readyTask = dequeue(readyQueue);
+	if (readyTask == null) exit (2);
+	if (readyTask != currentTask) {
+		YKExitMutex();
+		dispatcher(readyTask);
+		return;
+	}
+	YKExitMutex();
+	return;
+}
+
+void YKRun(void) {
+
+	YKMutex();
+	scheduler();
 
 }
 

@@ -135,3 +135,23 @@ TRAP:
 		pop		ax
 
 		iret
+
+DISPATCHER:
+
+		cli		
+		push 	bx			;Save Registers
+
+		mov		bx, [bp+4]	;Obtain stack pointer from TCB
+		mov		sp, [bx+3]	;Load stack pointer into SP
+
+		pop		bp
+		pop		es
+		pop		ds
+		pop		si
+		pop		di
+		pop		dx
+		pop		cx
+		pop		bx
+		pop		ax
+
+		iret

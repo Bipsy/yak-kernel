@@ -110,6 +110,8 @@ TCB* dequeue(List* list) {
 	//size of the list = 1
 	if (list->head == list->tail) {
 		TCB* retValue = list->head;
+		list->size--;
+		return retValue;
 		
 	}	
 
