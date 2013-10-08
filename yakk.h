@@ -1,9 +1,31 @@
-#ifndef YAKK.H
-#define YAKK.H
+//#ifndef YAKK_H
+//#define YAKK_H
 #include "yaku.h"
 
 
 #define null 0;
+#define IDLETASKSTACKSIZE 10
+
+//Kernel Data Structures
+
+typedef struct TCB TCB;
+
+struct TCB {
+	unsigned int tid;
+	unsigned char priority;
+	void* stackPointer;	
+	unsigned int state;	
+	unsigned int delayCount;
+	TCB* next;
+	TCB* prev;
+};
+
+typedef struct TaskBlock TaskBlock;
+
+struct TaskBlock {
+	TCB TCBPool[MAX_TASKS+1];
+	unsigned int nextFreeTCB;	
+};
 
 //Kernel API
 void YKInitialize(void);
@@ -14,7 +36,7 @@ void YKExitMutex(void);
 
 void YKIdleTask(void);
 
-void YKNewTask(void (* task) void), void *taskStack, unsigned char priority);
+void YKNewTask(void (* task) (void), void *taskStack, unsigned char priority);
 
 void YKDelayTask(unsigned count);
 
@@ -24,44 +46,30 @@ void YKExitISR(void);
 
 void YKScheduler();
 
-void YKDispatcher(TCB* currentTask, TCB* readyTask, contextBeenSaved);
+void YKDispatcher(TCB* readyTask);
 
 void YKTickHandler(void);
 
-YKSEM* YKSemCreate(int initialValue);
+//YKSEM* YKSemCreate(int initialValue);
 
-void YKSemPend(YKSEM* semaphore);
+//void YKSemPend(YKSEM* semaphore);
 
-void YKSemPost(YKSEM* semaphore);
+//void YKSemPost(YKSEM* semaphore);
 
-YKQ* YKQCreate(void** start, unsigned size);
+//YKQ* YKQCreate(void** start, unsigned size);
 
-void YKQPend(YKQ* queue);
+//void YKQPend(YKQ* queue);
 
-int YKQPost(YKQ* queue, void* msg);
+//int YKQPost(YKQ* queue, void* msg);
 
-YKEVENT* YKEventCreate(unsigned initialValue);
+//YKEVENT* YKEventCreate(unsigned initialValue);
 
-void YKEventSet(YKEVENT* event, unsigned eventMask);
+//void YKEventSet(YKEVENT* event, unsigned eventMask);
 
-void YKEVentReset(YKEVENT* event, unsigned eventMask);
+//void YKEVentReset(YKEVENT* event, unsigned eventMask);
 
-//Kernel Data Structures
+TCB* getNewTCB(void);
 
-typedef struct {
-	unsigned int tid;
-	unsigned int priority;
-	void* stackPointer;
-	void* stackSegment;	
-	unsigned int state;
-	unsigned int delayCount;
-	TCB* next;
-	TCB* prev;
-}TCB;
 
-typedef struct {
-	TCB TCBPool[MAX_TASKS+1];
-	unsigned int nextFreeTCB;	
-}TaskBlock;
 
-#endif
+//#endif
