@@ -1,13 +1,14 @@
 RESET:
+
 		push 	ax
 		push 	bx
 		push 	cx
-		push	dx
-		push 	si
+		push 	dx
 		push 	di
-		push	bp
-		push	es
-		push	ds
+		push 	si
+		push 	ds
+		push 	es
+		push 	bp
 
 		call	YKEnterISR
 		mov		ax, sp
@@ -21,28 +22,31 @@ RESET:
 		mov		al, 0x20		;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
 
-		pop		ds
-		pop		es
 		pop		bp
-		pop		di
+		pop		es
+		pop		ds
 		pop		si
+		pop		di
 		pop		dx
 		pop		cx
 		pop		bx
-		pop		ax		
+		pop		ax	
 
 		iret					;returning from ISR
 
 TICK:
+
 		push 	ax
 		push 	bx
 		push 	cx
-		push	dx
-		push 	si
+		push 	dx
 		push 	di
-		push	bp
-		push	es
-		push	ds
+		push 	si
+		push 	ds
+		push 	es
+		push 	bp
+
+
 		call	YKEnterISR
 
 		sti						;enabling interrupts
@@ -52,11 +56,13 @@ TICK:
 		mov al, 0x20			;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
 
-		pop		ds
-		pop		es
+		call	YKExitISR
+
 		pop		bp
-		pop		di
+		pop		es
+		pop		ds
 		pop		si
+		pop		di
 		pop		dx
 		pop		cx
 		pop		bx
@@ -69,12 +75,12 @@ KEYBOARD:
 		push 	ax
 		push 	bx
 		push 	cx
-		push	dx
-		push 	si
+		push 	dx
 		push 	di
-		push	bp
-		push	es
-		push	ds
+		push 	si
+		push 	ds
+		push 	es
+		push 	bp	
 		
 		call	YKEnterISR
 		
@@ -85,15 +91,47 @@ KEYBOARD:
 		mov     al, 0x20		;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
 
-		pop		ds
-		pop		es
+		call	YKExitISR
+
 		pop		bp
-		pop		di
+		pop		es
+		pop		ds
 		pop		si
+		pop		di
 		pop		dx
 		pop		cx
 		pop		bx
 		pop		ax
 
-		iret					;returning from ISR	
+		iret					;returning from ISR
 
+TRAP:
+
+		push 	ax
+		push 	bx
+		push 	cx
+		push 	dx
+		push 	di
+		push 	si
+		push 	ds
+		push 	es
+		push 	bp
+
+		call 	YKEnterISR
+
+		mov 	al, 0x20
+		out		0x20, al
+
+		call	YKExitISR
+
+		pop		bp
+		pop		es
+		pop		ds
+		pop		si
+		pop		di
+		pop		dx
+		pop		cx
+		pop		bx
+		pop		ax
+
+		iret

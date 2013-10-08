@@ -1,4 +1,9 @@
-typedef null 0;
+#ifndef YAKK.H
+#define YAKK.H
+#include "yaku.h"
+
+
+#define null 0;
 
 //Kernel API
 void YKInitialize(void);
@@ -17,7 +22,7 @@ void YKEnterISR(void);
 
 void YKExitISR(void);
 
-void YKScheduler(bool contextBeenSaved);
+void YKScheduler();
 
 void YKDispatcher(TCB* currentTask, TCB* readyTask, contextBeenSaved);
 
@@ -49,13 +54,14 @@ typedef struct {
 	void* stackPointer;
 	void* stackSegment;	
 	unsigned int state;
+	unsigned int delayCount;
 	TCB* next;
 	TCB* prev;
 }TCB;
 
 typedef struct {
-	TCB* TCBPool;
-	unsigned int nextFreeTCB;
-	
-	
+	TCB TCBPool[MAX_TASKS+1];
+	unsigned int nextFreeTCB;	
 }TaskBlock;
+
+#endif
