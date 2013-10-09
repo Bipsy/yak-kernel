@@ -15,8 +15,8 @@ typedef struct TCB {
 	void* stackPointer;	
 	unsigned int state;	
 	unsigned int delayCount;
-	TCB* next;
-	TCB* prev;
+	struct TCB* next;
+	struct TCB* prev;
 } TCB;
 
 typedef struct TaskBlock {
@@ -25,7 +25,7 @@ typedef struct TaskBlock {
 } TaskBlock;
 
 enum taskStates = {T_BLOCKED, T_READY, T_RUNNING};
-enum kernelState = {K_BLOCKED, K_RUNNING}
+enum kernelState = {K_BLOCKED, K_RUNNING};
 
 //Kernel API
 void YKInitialize(void);

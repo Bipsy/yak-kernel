@@ -1,6 +1,8 @@
 #ifndef DELAY_QUEUE_H
 #define DELAY_QUEUE_H
 
+#include "yakk.h"
+
 typedef struct DelayQueue {
 	TCB* head;
 	unsigned int size;
