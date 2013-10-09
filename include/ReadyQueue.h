@@ -9,10 +9,10 @@ typedef struct ReadyQueue {
 	unsigned int size;
 } ReadyQueue;
 
-void initializeReadyQueue(ReadyQueue* readyQueue);
+void initializeReadyQueue();
 
-void insertSorted(ReadyQueue* readyQueue, TCB* tcb);
+void insertReadyQueue(TCB* tcb);
 
-TCB* dequeue(ReadyQueue* readyQueue);
+TCB* removeReadyQueue();
 
 #endif

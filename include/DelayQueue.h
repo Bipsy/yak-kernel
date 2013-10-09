@@ -8,10 +8,10 @@ typedef struct DelayQueue {
 	unsigned int size;
 } DelayQueue;
 
-void tickClock(DelayQueue* delayQueue);
+void tickClock();
 
-void insertClock(DelayQueue* delayQueue, TCB* tcb);
+void insertDelayQueue(TCB* tcb);
 
-void removeClock(DelayQueue* delayQueue);
+void removeDelayQueue();
 
 #endif

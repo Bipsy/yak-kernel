@@ -1,6 +1,8 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
 #include "../include/yaku.h"
+#include "../include/ReadyQueue.h"
+#include "../include/DelayQueue.h"
 
 //User Accessible Variables
 unsigned int YKCtxSwCount = 0;
@@ -9,12 +11,12 @@ unsigned int YKTickNum = 0;
 
 //Kernel Accessible Variables
 static unsigned int ISRCallDepth = 0;
-static TCB* currentTask = null;
+static TCB* currentTask;
 static ReadyQueue readyQueue;
 static DelayQueue delayQueue;
 static TaskBlock taskBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
-static int kernelState = K_BLOCKED;
+static enum KernelState kernelState = K_BLOCKED;
 
 //Error Codes
 #define NEW_TASK_FAILED 1
@@ -76,6 +78,25 @@ void YKIdleTask(void) {
 
 }
 
+void YKscheduler(void) {
+
+	TCB* readyTask; 
+	YKEnterMutex();
+	readyTask = removeReadyQueue();
+	if (kernelState == K_BLOCKED) return;
+	if (readyTask == null) exit (READY_QUEUE_EMPTY);
+	if (readyTask != currentTask) {
+		YKCtxSwCount++;
+		currentTask->state = T_READY;
+		readyTask->state = T_RUNNING;
+		YKDispatcher(readyTask);
+		YKExitMutex();
+		return;
+	}
+	YKExitMutex();
+	return;
+}
+
 void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 
 	TCB* newTask;	
@@ -88,7 +109,7 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	newTask->tid = 0;
 	newTask->priority = priority;
 	newTask->stackPointer = taskStack;
-	newTask->state = READY;
+	newTask->state = T_READY;
 	newTask->delayCount = 0;
 	newTask->next = null;
 	newTask->prev = null;
@@ -101,8 +122,8 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	asm("mov [bx-24], cx");
 
 	//Insert into ready queue
-	insertSorted(&readyQueue, newTask);
-	scheduler();
+	insertReadyQueue(newTask);
+	YKScheduler();
 	return; 
 
 }
@@ -111,39 +132,20 @@ TCB* getNewTCB(void) {
 	
 	TCB* task;
 	if (taskBlock.nextFreeTCB < MAX_TASKS + 1) {
-                task = &taskBlock.tasks[taskBlock.nextFreeTCB];
+          task = &taskBlock.TCBPool[taskBlock.nextFreeTCB];
 		taskBlock.nextFreeTCB++;
 		return task;
 	} else {
-		printf("TCBFullError\n");		
 		return null;
 	}
 
-}
-
-void scheduler(void) {
-
-	YKEnterMutex();
-	TCB* readyTask = dequeue(readyQueue);
-	if (kernelState == K_BLOCKED) return;
-	if (readyTask == null) exit (READY_QUEUE_EMPTY);
-	if (readyTask != currentTask) {
-		YKCtxSwCount++;
-		currentTask->state = READY;
-		readyTask->state = RUNNING;
-		dispatcher(readyTask);
-		YKExitMutex();
-		return;
-	}
-	YKExitMutex();
-	return;
 }
 
 void YKRun(void) {
 
 	YKEnterMutex();
 	kernelState = K_RUNNING;
-	scheduler();
+	YKScheduler();
 	YKExitMutex();
 	return;
 
@@ -153,9 +155,9 @@ void YKDelayTask(unsigned int count) {
 
 	if (count == 0) return;
 
-	currentTask->state = BLOCKED;
+	currentTask->state = T_BLOCKED;
 	currentTask->delayCount = count;
-	insert(delayQueue, currentTask);
+	insertDelayQueue(currentTask);
 	asm("int 0x20");
 	return;
 

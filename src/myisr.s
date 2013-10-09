@@ -136,7 +136,7 @@ TRAP:
 
 		iret
 
-DISPATCHER:
+YKDispatcher:
 
 		cli		
 		push 	bx			;Save Registers

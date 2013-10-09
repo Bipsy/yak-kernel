@@ -7,6 +7,7 @@ static char ignored[9] = ") IGNORED";
 static char delay[17] = "DELAY KEY PRESSED";
 static char complete[14] = "DELAY COMPLETE";
 extern int KeyBuffer;
+extern unsigned int YKTickCounter;
 
 void resetHandler() {
 

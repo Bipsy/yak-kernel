@@ -3,17 +3,19 @@
 
 #include "yaku.h"
 
-
-#define null 0;
+#define null 0
 #define IDLETASKSTACKSIZE 10
 
 //Kernel Data Structures
+
+enum TaskState {T_BLOCKED, T_READY, T_RUNNING};
+enum KernelState {K_BLOCKED, K_RUNNING};
 
 typedef struct TCB {
 	unsigned int tid;
 	unsigned char priority;
 	void* stackPointer;	
-	unsigned int state;	
+	enum TaskState state;	
 	unsigned int delayCount;
 	struct TCB* next;
 	struct TCB* prev;
@@ -23,9 +25,6 @@ typedef struct TaskBlock {
 	TCB TCBPool[MAX_TASKS+1];
 	unsigned int nextFreeTCB;	
 } TaskBlock;
-
-enum taskStates = {T_BLOCKED, T_READY, T_RUNNING};
-enum kernelState = {K_BLOCKED, K_RUNNING};
 
 //Kernel API
 void YKInitialize(void);

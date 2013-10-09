@@ -9,6 +9,8 @@ void initializeReadyQueue() {
 
 void insertReadyQueue(TCB* tcb) {
 
+	TCB* temp;
+
 	if(tcb == null) return;
 
 	//list is empty
@@ -38,7 +40,8 @@ void insertReadyQueue(TCB* tcb) {
 	}
 
 	//size of the readyQueue > 1
-	TCB* temp = readyQueue.head;
+	 
+	temp = readyQueue.head;
 	while (temp != null) {
 		if (temp->priority > tcb->priority) {
 			tcb->next = temp;
