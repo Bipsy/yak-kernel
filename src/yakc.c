@@ -105,13 +105,12 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 TCB* getNewTCB(void) {
 
 	TCB* task;
-	int nextFreeBlock = taskBlock.nextFreeTCB;
-	if (nextFreeBlock < MAX_TASKS + 1) {
-		task = &taskBlock.tasks[nextFreeBlock];
-		nextFreeBlock++;
+	if (taskBlock.nextFreeTCB < MAX_TASKS + 1) {
+                task = &taskBlock.tasks[taskBlock.nextFreeTCB];
+		taskBlock.nextFreeTCB++;
 		return task;
 	} else {
-		print(TCBFullError, 17);		
+		printf("TCBFullError\n");		
 		return null;
 	}
 
@@ -135,6 +134,18 @@ void YKRun(void) {
 
 	YKMutex();
 	scheduler();
+
+}
+
+void YKDelayTask(unsigned int count) {
+
+	if (count == 0) return;
+
+	currentTask->state = BLOCKED;
+	currentTask->delayCount = count;
+	insert(delayQueue, currentTask);
+	asm("int 0x20");
+	return;
 
 }
 

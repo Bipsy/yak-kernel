@@ -1,5 +1,5 @@
-//#ifndef YAKK_H
-//#define YAKK_H
+#ifndef YAKK_H
+#define YAKK_H
 #include "yaku.h"
 
 
@@ -72,4 +72,4 @@ TCB* getNewTCB(void);
 
 
 
-//#endif
+#endif
