@@ -1,6 +1,8 @@
 #include "yakk.h"
 #include "ReadyQueue.h"
 
+extern ReadyQueue readyQueue;
+
 void initializeReadyQueue() {
 	readyQueue.size = 0;
 }

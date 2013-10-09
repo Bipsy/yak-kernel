@@ -8,7 +8,7 @@ extern DelayQueue delayQueue;
 void tickClock() {
 
 	TCB* current;
-        TCB* temp;
+    TCB* temp;
 	
 	//Size == 0
 	if (delayQueue.size == 0) return;
@@ -16,12 +16,12 @@ void tickClock() {
 	//Size > 0
 	current = delayQueue.head;
 	while (current != null) {
-            current->delayCount--;
-            temp = current;
-            if (temp->delayCount == 0) {
-                removeDelayQueue(temp);
-            }
-            current = current->next;
+    	current->delayCount--;
+        temp = current;
+        if (temp->delayCount == 0) {
+            removeDelayQueue(temp);
+        }
+        current = current->next;
 	}
 
 }

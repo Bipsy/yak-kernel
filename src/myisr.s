@@ -49,11 +49,11 @@ TICK:
 
 		call	YKEnterISR
 
-		sti					;enabling interrupts
+		sti						;enabling interrupts
 		call	tickHandler		;calling C interrupt handler
-		cli					;disabling interrupts
+		cli						;disabling interrupts
 
-		mov 		al, 0x20		;Load nonspecific EOI value (0x20) into register al
+		mov 	al, 0x20		;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
 
 		call	YKExitISR

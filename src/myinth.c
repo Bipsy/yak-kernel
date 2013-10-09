@@ -1,7 +1,6 @@
 #include "clib.h"
+#include "yakk.h"
 
-static int tickCounter = 0;
-static int i = 0;
 static char tick[5] = "TICK ";
 static char keypress[10] = "KEYPRESS (";
 static char ignored[9] = ") IGNORED";
@@ -17,16 +16,19 @@ void resetHandler() {
 
 void tickHandler() {
 
-	tickCounter++;
+	YKTickCounter++;
 	printNewLine();
 	print(tick, 5);
-	printInt(tickCounter);
+	printInt(YKTickCounter);
 	printNewLine();
+	YKTickHandler();
 	return;
 
 }
 
 void keyboardHandler() {
+
+	int i;	
 
 	if (KeyBuffer == 'd') {
 		printNewLine();

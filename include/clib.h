@@ -1,3 +1,6 @@
+#ifndef CLIB_H
+#define CLIB_H
+
 // Header file for clib.s output routines
 
 // Text Output:
@@ -23,3 +26,4 @@ void exit(unsigned char code);        // Terminate with exit code
 // PIC Functions:
 void signalEOI(void);                 // Send non-specific EOI to PIC
 
+#endif

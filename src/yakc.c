@@ -16,9 +16,10 @@ static TaskBlock taskBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 
 //Error Codes
-#define NewTaskFailed 1
+#define NEW_TASK_FAILED 1
+#define READY_QUEUE_EMPTY 2
 
-char* TCBFullError = "Task Block Full\n\r";
+char* TCBFullError = "Task Block Full\n";
 
 void YKEnterMutex(void) {
 
@@ -79,7 +80,7 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	
 	//Obtain a TCB
 	newTask = getNewTCB();
-	if (newTask == null) exit(NewTaskFailed);
+	if (newTask == null) exit(NEW_TASK_FAILED);
 
 	//Fill TCB
 	newTask->tid = 0;
@@ -120,9 +121,12 @@ void scheduler(void) {
 
 	YKEnterMutex();
 	TCB* readyTask = dequeue(readyQueue);
-	if (readyTask == null) exit (2);
+	if (readyTask == null) exit (READY_QUEUE_EMPTY);
 	if (readyTask != currentTask) {
+		YKCtxSwCount++;
 		YKExitMutex();
+		currentTask->state = READY;
+		readyTask->state = RUNNING;
 		dispatcher(readyTask);
 		return;
 	}
@@ -146,6 +150,12 @@ void YKDelayTask(unsigned int count) {
 	insert(delayQueue, currentTask);
 	asm("int 0x20");
 	return;
+
+}
+
+void YKTickHandler(void) {
+
+	tickClock();
 
 }
 

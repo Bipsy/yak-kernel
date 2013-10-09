@@ -1,5 +1,6 @@
 #ifndef YAKK_H
 #define YAKK_H
+
 #include "yaku.h"
 
 
@@ -8,9 +9,7 @@
 
 //Kernel Data Structures
 
-typedef struct TCB TCB;
-
-struct TCB {
+typedef struct TCB {
 	unsigned int tid;
 	unsigned char priority;
 	void* stackPointer;	
@@ -18,14 +17,15 @@ struct TCB {
 	unsigned int delayCount;
 	TCB* next;
 	TCB* prev;
-};
+} TCB;
 
-typedef struct TaskBlock TaskBlock;
-
-struct TaskBlock {
+typedef struct TaskBlock {
 	TCB TCBPool[MAX_TASKS+1];
 	unsigned int nextFreeTCB;	
-};
+} TaskBlock;
+
+enum taskStates = {T_BLOCKED, T_READY, T_RUNNING};
+enum kernelState = {K_BLOCKED, K_RUNNING}
 
 //Kernel API
 void YKInitialize(void);
@@ -69,7 +69,5 @@ void YKTickHandler(void);
 //void YKEVentReset(YKEVENT* event, unsigned eventMask);
 
 TCB* getNewTCB(void);
-
-
 
 #endif
