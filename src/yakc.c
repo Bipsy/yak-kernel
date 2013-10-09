@@ -1,6 +1,6 @@
-#include "clib.h"
-#include "yakk.h"
-#include "yaku.h"
+#include "../include/clib.h"
+#include "../include/yakk.h"
+#include "../include/yaku.h"
 
 //User Accessible Variables
 unsigned int YKCtxSwCount = 0;
@@ -14,6 +14,7 @@ static ReadyQueue readyQueue;
 static DelayQueue delayQueue;
 static TaskBlock taskBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
+static int kernelState = K_BLOCKED;
 
 //Error Codes
 #define NEW_TASK_FAILED 1
@@ -61,6 +62,7 @@ void YKInitialize(void) {
 	//
 
 	YKExitMutex();
+	return;
 
 }
 
@@ -99,12 +101,14 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	asm("mov [bx-24], cx");
 
 	//Insert into ready queue
-	insertSorted(&readyQueue, newTask); 
+	insertSorted(&readyQueue, newTask);
+	scheduler();
+	return; 
 
 }
 
 TCB* getNewTCB(void) {
-
+	
 	TCB* task;
 	if (taskBlock.nextFreeTCB < MAX_TASKS + 1) {
                 task = &taskBlock.tasks[taskBlock.nextFreeTCB];
@@ -121,13 +125,14 @@ void scheduler(void) {
 
 	YKEnterMutex();
 	TCB* readyTask = dequeue(readyQueue);
+	if (kernelState == K_BLOCKED) return;
 	if (readyTask == null) exit (READY_QUEUE_EMPTY);
 	if (readyTask != currentTask) {
 		YKCtxSwCount++;
-		YKExitMutex();
 		currentTask->state = READY;
 		readyTask->state = RUNNING;
 		dispatcher(readyTask);
+		YKExitMutex();
 		return;
 	}
 	YKExitMutex();
@@ -136,8 +141,11 @@ void scheduler(void) {
 
 void YKRun(void) {
 
-	YKMutex();
+	YKEnterMutex();
+	kernelState = K_RUNNING;
 	scheduler();
+	YKExitMutex();
+	return;
 
 }
 

@@ -1,6 +1,6 @@
-#include "DelayQueue.h"
-#include "ReadyQueue.h"
-#include "yakk.h"
+#include "../include/DelayQueue.h"
+#include "../include/ReadyQueue.h"
+#include "../include/yakk.h"
 
 extern ReadyQueue readyQueue;
 extern DelayQueue delayQueue;

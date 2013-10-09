@@ -1,5 +1,5 @@
-#include "clib.h"
-#include "yakk.h"
+#include "../include/clib.h"
+#include "../include/yakk.h"
 
 static char tick[5] = "TICK ";
 static char keypress[10] = "KEYPRESS (";

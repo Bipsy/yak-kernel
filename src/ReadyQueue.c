@@ -1,5 +1,5 @@
-#include "yakk.h"
-#include "ReadyQueue.h"
+#include "../include/yakk.h"
+#include "../include/ReadyQueue.h"
 
 extern ReadyQueue readyQueue;
 
