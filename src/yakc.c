@@ -88,12 +88,12 @@ void YKScheduler(void) {
 	printString("We are in scheduler\n");
 	YKEnterMutex();
 	if (kernelState == K_BLOCKED) return;
-	readyTask = removeReadyQueue();
+	readyTask = peekReadyQueue();
 	if (readyTask == null) exit(READY_QUEUE_EMPTY);
 	if (readyTask != currentTask) {
+		currentTask->state = T_READY;
 		currentTask = readyTask;
 		YKCtxSwCount++;
-		currentTask->state = T_READY;
 		readyTask->state = T_RUNNING;
 		YKDispatcher(readyTask);
 		YKExitMutex();
@@ -140,7 +140,7 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	printString("Insert into ready queue\n");
 	insertReadyQueue(newTask);
 	printString("Call scheduler\n");
-	YKScheduler();
+	asm("int 0x20");
 	return; 
 
 }

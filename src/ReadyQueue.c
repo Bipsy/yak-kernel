@@ -76,6 +76,16 @@ void insertReadyQueue(TCB* tcb) {
 
 }
 
+TCB* peekReadyQueue() {
+
+	if (readyQueue.size == 0) {
+		return null;
+	} else {
+		return readyQueue.head;
+	}
+		
+}
+
 TCB* removeReadyQueue() {
 
 	TCB* retValue;

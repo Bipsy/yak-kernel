@@ -13,6 +13,8 @@ void initializeReadyQueue();
 
 void insertReadyQueue(TCB* tcb);
 
+TCB* peekReadyQueue();
+
 TCB* removeReadyQueue();
 
 #endif
