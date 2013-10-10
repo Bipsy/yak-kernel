@@ -106,26 +106,26 @@ void YKScheduler(void) {
 void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 
 	TCB* newTask;
-	printInt(priority);
-	printNewLine();	
+	//printInt(priority);
+	//printNewLine();	
 	
 	//Obtain a TCB
-	printString("Obtain a TCB\n");
+	//printString("Obtain a TCB\n");
 	newTask = getNewTCB();
 	if (newTask == null) exit(NEW_TASK_FAILED);
 
 	//Fill TCB
-	printString("Fill TCB\n");
+	//printString("Fill TCB\n");
 	newTask->tid = 0;
 	newTask->priority = priority;
-	newTask->stackPointer = taskStack;
+	newTask->stackPointer = ((void*)((int*) taskStack - 12));
 	newTask->state = T_READY;
 	newTask->delayCount = 0;
 	newTask->next = null;
 	newTask->prev = null;
 
 	//Set up Stack
-	printString("Set up Stack\n");
+	//printString("Set up Stack\n");
 	asm("push bx");
 	asm("push cx");
 	asm("mov bx, [bp+6]"); //Get address of stack

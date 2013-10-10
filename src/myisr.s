@@ -137,13 +137,12 @@ TRAP:
 
 YKDispatcher:
 
-		cli		
-		push 	bx			;Save Registers
+		cli
+		push 	bp
+		mov		bp, sp		
 
 		mov		bx, [bp+4]	;Obtain stack pointer from TCB
-		mov		sp, [bx+3]	;Load stack pointer into SP
-
-		pop		bx
+		mov		sp, [bx+4]	;Load stack pointer into SP
 
 		pop		bp
 		pop		es
