@@ -7,13 +7,13 @@
 //User Accessible Variables
 unsigned int YKCtxSwCount = 0;
 unsigned int YKIdleCount = 0;
-unsigned int YKTickNum = 0;
+unsigned int YKTickCounter = 0;
 
 //Kernel Accessible Variables
 static unsigned int ISRCallDepth = 0;
 static TCB* currentTask;
-static ReadyQueue readyQueue;
-static DelayQueue delayQueue;
+ReadyQueue readyQueue;
+DelayQueue delayQueue;
 static TaskBlock taskBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 static enum KernelState kernelState = K_BLOCKED;
@@ -78,7 +78,7 @@ void YKIdleTask(void) {
 
 }
 
-void YKscheduler(void) {
+void YKScheduler(void) {
 
 	TCB* readyTask; 
 	YKEnterMutex();
@@ -117,8 +117,8 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	//Set up Stack
 	asm("mov bx, [bp+6]"); //Get address of stack
 	asm("mov cx, [bp+4]"); //Get address of function pointer
-	asm("mov [bx-20], 0x0200"); //Move flag register onto the stack
-	asm("mov [bx-22], 0x0");	
+	asm("mov [bx-20], word 0x0200"); //Move flag register onto the stack
+	asm("mov [bx-22], word 0x0");	
 	asm("mov [bx-24], cx");
 
 	//Insert into ready queue

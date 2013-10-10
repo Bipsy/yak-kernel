@@ -10,10 +10,7 @@ RESET:
 		push 	es
 		push 	bp
 
-		call	YKEnterISR
-		mov		ax, sp
-		mov     bx, ss
-		call	saveStackPointer
+		call		YKEnterISR
 		
 		sti						;enabling interrupts
 		call 	resetHandler	;calling C interrupt handler
@@ -21,6 +18,8 @@ RESET:
 		
 		mov		al, 0x20		;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
+
+		call 	YKExitISR
 
 		pop		bp
 		pop		es

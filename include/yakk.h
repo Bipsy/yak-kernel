@@ -43,7 +43,7 @@ void YKEnterISR(void);
 
 void YKExitISR(void);
 
-void YKScheduler();
+void YKScheduler(void);
 
 void YKDispatcher(TCB* readyTask);
 
