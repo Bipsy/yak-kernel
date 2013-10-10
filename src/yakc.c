@@ -85,7 +85,7 @@ void YKIdleTask(void) {
 void YKScheduler(void) {
 
 	TCB* readyTask; 
-	printString("We are in scheduler\n");
+	//printString("We are in scheduler\n");
 	YKEnterMutex();
 	if (kernelState == K_BLOCKED) return;
 	readyTask = peekReadyQueue();
@@ -137,9 +137,9 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	asm("pop bx");
 
 	//Insert into ready queue
-	printString("Insert into ready queue\n");
+	//printString("Insert into ready queue\n");
 	insertReadyQueue(newTask);
-	printString("Call scheduler\n");
+	//printString("Call scheduler\n");
 	asm("int 0x20");
 	return; 
 

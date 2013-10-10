@@ -23,9 +23,9 @@ void insertReadyQueue(TCB* tcb) {
 		tcb->next = null;
 		tcb->prev = null;
 		readyQueue.size = 1;
-		printString("readyQueue size is ");
-		printInt(readyQueue.size);
-		printNewLine();
+		//printString("readyQueue size is ");
+		//printInt(readyQueue.size);
+		//printNewLine();
 		return;
 	}
 
@@ -44,9 +44,9 @@ void insertReadyQueue(TCB* tcb) {
 			readyQueue.tail->prev = tcb;
 			readyQueue.head = tcb;
 			readyQueue.size++;
-			printString("readyQueue size is ");
-			printInt(readyQueue.size);
-			printNewLine();
+			//printString("readyQueue size is ");
+			//printInt(readyQueue.size);
+			//printNewLine();
 			return;
 		}
 	}
