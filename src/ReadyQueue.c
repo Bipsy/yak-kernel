@@ -1,10 +1,13 @@
 #include "../include/yakk.h"
 #include "../include/ReadyQueue.h"
+#include "../include/clib.h"
 
 extern ReadyQueue readyQueue;
 
 void initializeReadyQueue() {
 	readyQueue.size = 0;
+	readyQueue.head = null;
+	readyQueue.tail = null;
 }
 
 void insertReadyQueue(TCB* tcb) {
@@ -20,11 +23,14 @@ void insertReadyQueue(TCB* tcb) {
 		tcb->next = null;
 		tcb->prev = null;
 		readyQueue.size = 1;
+		printString("readyQueue size is ");
+		printInt(readyQueue.size);
+		printNewLine();
 		return;
 	}
 
 	//size of the list = 1
-	if (readyQueue.head == readyQueue.tail) {		
+	if (readyQueue.size == 1) {		
 		if (readyQueue.head->priority < tcb->priority) {
 			readyQueue.head->next = tcb;
 			tcb->prev = readyQueue.head;
@@ -36,6 +42,12 @@ void insertReadyQueue(TCB* tcb) {
 			tcb->next = readyQueue.head;
 			tcb->prev = null;
 			readyQueue.tail->prev = tcb;
+			readyQueue.head = tcb;
+			readyQueue.size++;
+			printString("readyQueue size is ");
+			printInt(readyQueue.size);
+			printNewLine();
+			return;
 		}
 	}
 
@@ -69,7 +81,9 @@ TCB* removeReadyQueue() {
 	TCB* retValue;
         
 	//size of the list = 1
-	if (readyQueue.head == readyQueue.tail) {
+	if (readyQueue.size == 0) {
+		//printInt(0);
+		//printNewLine();
 		retValue = readyQueue.head;
 		readyQueue.size--;
 		readyQueue.head = null;
@@ -78,6 +92,8 @@ TCB* removeReadyQueue() {
 	}
 
 	//size of the list > 1
+	//printInt(1);
+	//printNewLine();
 	retValue = readyQueue.head;
 	readyQueue.head = readyQueue.head->next;
 	readyQueue.size--;

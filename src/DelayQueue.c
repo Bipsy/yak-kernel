@@ -5,6 +5,11 @@
 extern ReadyQueue readyQueue;
 extern DelayQueue delayQueue;
 
+void initializeDelayQueue() {
+	delayQueue.size = 0;
+	delayQueue.head = null;
+}
+
 void tickClock() {
 
 	TCB* current;

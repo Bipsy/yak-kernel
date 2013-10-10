@@ -18,10 +18,10 @@ void resetHandler() {
 void tickHandler() {
 
 	YKTickCounter++;
-	printNewLine();
-	print(tick, 5);
-	printInt(YKTickCounter);
-	printNewLine();
+	//printNewLine();
+	//(tick, 5);
+	//printInt(YKTickCounter);
+	//printNewLine();
 	YKTickHandler();
 	return;
 

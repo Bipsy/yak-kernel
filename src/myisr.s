@@ -143,6 +143,8 @@ YKDispatcher:
 		mov		bx, [bp+4]	;Obtain stack pointer from TCB
 		mov		sp, [bx+3]	;Load stack pointer into SP
 
+		pop		bx
+
 		pop		bp
 		pop		es
 		pop		ds
@@ -154,3 +156,4 @@ YKDispatcher:
 		pop		ax
 
 		iret
+

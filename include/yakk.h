@@ -69,4 +69,6 @@ void YKTickHandler(void);
 
 TCB* getNewTCB(void);
 
+void YKRun(void);
+
 #endif
