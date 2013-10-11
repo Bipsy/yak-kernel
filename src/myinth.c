@@ -17,11 +17,14 @@ void resetHandler() {
 
 void tickHandler() {
 
+	YKEnterMutex();
 	YKTickCounter++;
-	//printNewLine();
-	//(tick, 5);
-	//printInt(YKTickCounter);
-	//printNewLine();
+	YKExitMutex();
+	printString("\nTick ");
+	YKEnterMutex();
+	printInt(YKTickCounter);
+	YKExitMutex();
+	printNewLine();
 	YKTickHandler();
 	return;
 

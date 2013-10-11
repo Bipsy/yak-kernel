@@ -89,9 +89,14 @@ TCB* peekReadyQueue() {
 TCB* removeReadyQueue() {
 
 	TCB* retValue;
+
+	//Size of the list = 0
+	if (readyQueue.size == 0) {
+		return null;
+	}
         
 	//size of the list = 1
-	if (readyQueue.size == 0) {
+	if (readyQueue.size == 1) {
 		//printInt(0);
 		//printNewLine();
 		retValue = readyQueue.head;
@@ -102,11 +107,13 @@ TCB* removeReadyQueue() {
 	}
 
 	//size of the list > 1
-	//printInt(1);
+	//printString("Removing from readyQueue\n");
 	//printNewLine();
 	retValue = readyQueue.head;
 	readyQueue.head = readyQueue.head->next;
 	readyQueue.size--;
+	retValue->next = null;
+	retValue->prev = null;
 	return retValue;	
 
 }

@@ -13,7 +13,7 @@ void initializeDelayQueue() {
 void tickClock() {
 
 	TCB* current;
-    TCB* temp;
+    	TCB* temp;
 	
 	//Size == 0
 	if (delayQueue.size == 0) return;
@@ -21,12 +21,20 @@ void tickClock() {
 	//Size > 0
 	current = delayQueue.head;
 	while (current != null) {
-    	current->delayCount--;
-        temp = current;
-        if (temp->delayCount == 0) {
-            removeDelayQueue(temp);
-        }
-        current = current->next;
+    		current->delayCount--;
+        	temp = current;
+		current = current->next;
+        	if (temp->delayCount == 0) {
+			//Check if not at end
+			if (temp->next != null) {
+				temp->next->prev = null;
+			}
+			delayQueue.head = temp->next;
+			temp->next = null;
+			temp->prev = null;
+			delayQueue.size--;
+			insertReadyQueue(temp);
+		}
 	}
 
 }
@@ -75,45 +83,5 @@ void insertDelayQueue(TCB* tcb) {
         current = current->next;
     }
     
-}
-
-void removeDelayQueue(TCB* tcb) {
-    
-    TCB* current;
-    TCB* temp;
-    
-    if (tcb == null) return;
-    
-    current = delayQueue.head;
-    while (current != null) {
-        if (current->priority = tcb->priority) {
-            if (current == delayQueue.head) {
-                temp = current;
-                current = current->next;
-                delayQueue.head = temp->next;
-                temp->next->prev = null;
-                delayQueue.size--;
-                temp->next = null;
-                temp->prev = null;
-                insertReadyQueue(temp);
-            } else if (current->next == null) {
-                temp = current;
-                current = current->next;
-                temp->prev->next = null;
-                delayQueue.size--;
-                insertReadyQueue(temp);
-            } else {
-                temp = current;
-                current = current->next;
-                temp->prev->next = temp->next;
-                temp->next->prev = temp->prev;
-                temp->next = null;
-                temp->prev = null;
-                delayQueue.size--;
-                insertReadyQueue(temp);
-            }
-        } 
-    }
-   
 }
 

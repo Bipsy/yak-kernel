@@ -11,7 +11,7 @@ unsigned int YKTickCounter = 0;
 
 //Kernel Accessible Variables
 static unsigned int ISRCallDepth = 0;
-static TCB* currentTask;
+TCB* currentTask;
 ReadyQueue readyQueue;
 DelayQueue delayQueue;
 static TaskBlock taskBlock;
@@ -21,8 +21,6 @@ static enum KernelState kernelState = K_BLOCKED;
 //Error Codes
 #define NEW_TASK_FAILED 1
 #define READY_QUEUE_EMPTY 2
-
-char* TCBFullError = "Task Block Full\n";
 
 void YKEnterMutex(void) {
 
@@ -74,10 +72,12 @@ void YKInitialize(void) {
 
 void YKIdleTask(void) {
 
+	printString("IdleTask ran\n");
+
 	while (1) {
-		int i;
-		i = 1;
+		YKEnterMutex();
 		YKIdleCount++;
+		YKExitMutex();
 	}
 
 }
@@ -170,11 +170,14 @@ void YKRun(void) {
 
 void YKDelayTask(unsigned int count) {
 
+	TCB* delayedTask;
+
 	if (count == 0) return;
 
 	currentTask->state = T_BLOCKED;
 	currentTask->delayCount = count;
-	insertDelayQueue(currentTask);
+	delayedTask = removeReadyQueue();
+	insertDelayQueue(delayedTask);
 	asm("int 0x20");
 	return;
 
