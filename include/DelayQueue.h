@@ -8,12 +8,12 @@ typedef struct DelayQueue {
 	unsigned int size;
 } DelayQueue;
 
-void initializeDelayQueue();
+void initializeDelayQueue(void);
 
-void tickClock();
+void tickClock(void);
 
 void insertDelayQueue(TCB* tcb);
 
-void removeDelayQueue();
+void printDelayQueue(void);
 
 #endif

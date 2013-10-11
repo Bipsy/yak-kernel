@@ -72,7 +72,8 @@ void YKInitialize(void) {
 
 void YKIdleTask(void) {
 
-	printString("IdleTask ran\n");
+	printString("IdleTaskStarted ran");
+	printNewLine();
 
 	while (1) {
 		YKEnterMutex();
@@ -139,6 +140,8 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	//Insert into ready queue
 	//printString("Insert into ready queue\n");
 	insertReadyQueue(newTask);
+	//printString("Printing ready queue at end of new task\n");
+	//printReadyQueue();
 	//printString("Call scheduler\n");
 	asm("int 0x20");
 	return; 
@@ -162,6 +165,7 @@ void YKRun(void) {
 
 	YKEnterMutex();
 	kernelState = K_RUNNING;
+	//printReadyQueue();
 	YKScheduler();
 	YKExitMutex();
 	return;
@@ -174,10 +178,11 @@ void YKDelayTask(unsigned int count) {
 
 	if (count == 0) return;
 
-	currentTask->state = T_BLOCKED;
-	currentTask->delayCount = count;
 	delayedTask = removeReadyQueue();
+	delayedTask->state = T_BLOCKED;
+	delayedTask->delayCount = count;
 	insertDelayQueue(delayedTask);
+	printDelayQueue();
 	asm("int 0x20");
 	return;
 

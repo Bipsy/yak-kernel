@@ -1,6 +1,7 @@
 #include "../include/DelayQueue.h"
 #include "../include/ReadyQueue.h"
 #include "../include/yakk.h"
+#include "../include/clib.h"
 
 extern ReadyQueue readyQueue;
 extern DelayQueue delayQueue;
@@ -41,47 +42,65 @@ void tickClock() {
 
 void insertDelayQueue(TCB* tcb) {
     
-    TCB* current;
-    unsigned int sumCount;
+	TCB* current;
+	unsigned int sumCount;
       
-    if (tcb == null) return;
+	if (tcb == null) return;
     
-    //Size = 0
-    if (delayQueue.size == 0) {
-        delayQueue.head = tcb;
-        tcb->next = null;
-        tcb->prev = null;
-        delayQueue.size++;
-        return;
-    }
+	//Size = 0
+     if (delayQueue.size == 0) {
+         delayQueue.head = tcb;
+         tcb->next = null;
+         tcb->prev = null;
+         delayQueue.size++;
+         return;
+     }
     
-    //Size > 0
-    current = delayQueue.head;
-    sumCount = 0;
-    while (current != null) {
-        sumCount += current->delayCount;
-        if (tcb->delayCount < sumCount) {
-            tcb->prev = current->prev;
-            tcb->next = current;
-            if (current == delayQueue.head) {
-                delayQueue.head = tcb;
-                current->prev->next = tcb;
-            }
-            current->prev = tcb;
-            delayQueue.size++;
-            tcb->delayCount = tcb->delayCount - sumCount;
-            return;
-        }
-        if (current->next == null) {
-            current->next = tcb;
-            tcb->prev = current;
-            tcb->next = null;
-            delayQueue.size++;
-            tcb->delayCount = tcb->delayCount - sumCount;
-            return;
-        }
-        current = current->next;
-    }
-    
+     //Size > 0
+     current = delayQueue.head;
+     sumCount = 0;
+     while (current != null) {
+         sumCount += current->delayCount;
+		if (tcb->delayCount < sumCount) {
+			tcb->next = current;
+			tcb->prev = current->prev;
+     		if (current == delayQueue.head) {
+                    delayQueue.head = tcb;
+            	} else {
+				current->prev->next = tcb;
+			}
+            	current->prev = tcb;
+            	delayQueue.size++;
+            	tcb->delayCount = tcb->delayCount - sumCount;
+            	return;
+        	}
+        	if (current->next == null) {
+        	    current->next = tcb;
+        	    tcb->prev = current;
+        	    tcb->next = null;
+        	    delayQueue.size++;
+        	    tcb->delayCount = tcb->delayCount - sumCount;
+        	    return;
+        	}
+        	current = current->next;
+    	}
+ 
+}
+
+void printDelayQueue(void) {
+
+	TCB* current;
+
+	current = delayQueue.head;
+	printString("Printing Delay Queue with size ");
+	printInt(delayQueue.size);
+	printNewLine();
+	
+	while (current != null) {
+		printInt(current->priority);
+		printNewLine();
+		current = current->next;
+	}
+
 }
 

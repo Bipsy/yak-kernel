@@ -9,12 +9,14 @@ typedef struct ReadyQueue {
 	unsigned int size;
 } ReadyQueue;
 
-void initializeReadyQueue();
+void initializeReadyQueue(void);
 
 void insertReadyQueue(TCB* tcb);
 
-TCB* peekReadyQueue();
+TCB* peekReadyQueue(void);
 
-TCB* removeReadyQueue();
+TCB* removeReadyQueue(void);
+
+void printReadyQueue(void);
 
 #endif

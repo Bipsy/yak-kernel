@@ -58,8 +58,12 @@ void insertReadyQueue(TCB* tcb) {
 		if (temp->priority > tcb->priority) {
 			tcb->next = temp;
 			tcb->prev = temp->prev;
+			if (temp == readyQueue.head) {
+				readyQueue.head = tcb;
+			} else {
+				temp->prev->next = tcb;
+			}
 			temp->prev = tcb;
-			if (temp == readyQueue.head) readyQueue.head = tcb;
 			readyQueue.size++;
 			return;
 		}
@@ -116,4 +120,19 @@ TCB* removeReadyQueue() {
 	retValue->prev = null;
 	return retValue;	
 
+}
+
+void printReadyQueue() {
+	TCB* current;
+
+	current = readyQueue.head;
+	printString("Printing Ready Queue with size ");
+	printInt(readyQueue.size);
+	printNewLine();
+	
+	while (current != null) {
+		printInt(current->priority);
+		printNewLine();
+		current = current->next;
+	}
 }
