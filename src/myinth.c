@@ -20,12 +20,12 @@ void tickHandler() {
 	YKEnterMutex();
 	YKTickCounter++;
 	YKExitMutex();
-	//printNewLine();
-	//printString("Tick ");
-	//YKEnterMutex();
-	//printInt(YKTickCounter);
-	//YKExitMutex();
-	//printNewLine();
+	printNewLine();
+	printString("Tick ");
+	YKEnterMutex();
+	printInt(YKTickCounter);
+	YKExitMutex();
+	printNewLine();
 	YKTickHandler();
 	return;
 

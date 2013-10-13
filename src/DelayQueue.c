@@ -21,6 +21,7 @@ void tickClock() {
 	
 	//Potential bug...if two tasks have same delay count	
 	current = delayQueue.head;
+	current->delayCount--;
 	if (delayQueue.size == 1) {
 		if (current->delayCount == 0) {
 			delayQueue.head = null;
@@ -30,23 +31,26 @@ void tickClock() {
 			current->state = T_READY;
 			insertReadyQueue(current);
 			return;
-		} else {
-			current->delayCount--;
-			return;
-		}
+		} 
 	}
 
-	//Size > 1
-	if (current->delayCount == 0) {
-		delayQueue.head = current->next;
-		delayQueue.size--;
-		current->next = null;
-		current->prev = null;
-		current->state = T_READY;
-		insertReadyQueue(current);
-		return;
-	} else {
-		current->delayCount--;
+	while (current != null) {
+		current = delayQueue.head;
+		if (current->delayCount == 0) {
+			delayQueue.head = current->next;
+			if (current->next != null) {
+				current->next->prev = null;
+			}
+			current->next = null;
+			current->prev = null;
+			current->state = T_READY;
+			temp = current;
+			delayQueue.size--;
+			insertReadyQueue(temp);
+			current = null;
+		} else {
+			return;
+		}
 	}
 
 }
@@ -82,7 +86,7 @@ void insertDelayQueue(TCB* tcb) {
 			}
             	current->prev = tcb;
             	delayQueue.size++;
-            	tcb->delayCount = tcb->delayCount - sumCount;
+            	current->delayCount = current->delayCount - (tcb->delayCount - sumCount);
             	return;
         	}
         	if (current->next == null) {
@@ -91,6 +95,7 @@ void insertDelayQueue(TCB* tcb) {
         	    tcb->next = null;
         	    delayQueue.size++;
         	    tcb->delayCount = tcb->delayCount - sumCount;
+			//printDelayQueue();
         	    return;
         	}
         	current = current->next;
@@ -108,11 +113,12 @@ void printDelayQueue(void) {
 	printInt(delayQueue.size);
 	printNewLine();
 	
-	while (current != null && i < 10) {
+	while (current != null) {
 		printInt(current->priority);
+		printString(" ");
+		printInt(current->delayCount);
 		printNewLine();
 		current = current->next;
-		i++;
 	}
 
 }
