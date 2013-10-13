@@ -3,7 +3,6 @@
 #include "../include/yakk.h"
 #include "../include/clib.h"
 
-extern ReadyQueue readyQueue;
 extern DelayQueue delayQueue;
 
 void initializeDelayQueue() {
@@ -18,24 +17,36 @@ void tickClock() {
 	
 	//Size == 0
 	if (delayQueue.size == 0) return;
+	//printDelayQueue();
 	
-	//Size > 0
+	//Potential bug...if two tasks have same delay count	
 	current = delayQueue.head;
-	while (current != null) {
-    		current->delayCount--;
-        	temp = current;
-		current = current->next;
-        	if (temp->delayCount == 0) {
-			//Check if not at end
-			if (temp->next != null) {
-				temp->next->prev = null;
-			}
-			delayQueue.head = temp->next;
-			temp->next = null;
-			temp->prev = null;
-			delayQueue.size--;
-			insertReadyQueue(temp);
+	if (delayQueue.size == 1) {
+		if (current->delayCount == 0) {
+			delayQueue.head = null;
+			delayQueue.size = 0;
+			current->next = null;
+			current->prev = null;
+			current->state = T_READY;
+			insertReadyQueue(current);
+			return;
+		} else {
+			current->delayCount--;
+			return;
 		}
+	}
+
+	//Size > 1
+	if (current->delayCount == 0) {
+		delayQueue.head = current->next;
+		delayQueue.size--;
+		current->next = null;
+		current->prev = null;
+		current->state = T_READY;
+		insertReadyQueue(current);
+		return;
+	} else {
+		current->delayCount--;
 	}
 
 }
@@ -90,16 +101,18 @@ void insertDelayQueue(TCB* tcb) {
 void printDelayQueue(void) {
 
 	TCB* current;
+	int i;
 
 	current = delayQueue.head;
 	printString("Printing Delay Queue with size ");
 	printInt(delayQueue.size);
 	printNewLine();
 	
-	while (current != null) {
+	while (current != null && i < 10) {
 		printInt(current->priority);
 		printNewLine();
 		current = current->next;
+		i++;
 	}
 
 }

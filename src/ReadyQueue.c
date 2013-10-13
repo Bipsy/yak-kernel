@@ -104,6 +104,8 @@ TCB* removeReadyQueue() {
 		//printInt(0);
 		//printNewLine();
 		retValue = readyQueue.head;
+		retValue->next = null;
+		retValue->prev = null;
 		readyQueue.size--;
 		readyQueue.head = null;
 		readyQueue.tail = null;

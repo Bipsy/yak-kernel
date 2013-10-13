@@ -72,8 +72,8 @@ void YKInitialize(void) {
 
 void YKIdleTask(void) {
 
-	printString("IdleTaskStarted ran");
-	printNewLine();
+	//printString("IdleTaskStarted ran");
+	//printNewLine();
 
 	while (1) {
 		YKEnterMutex();
@@ -182,7 +182,7 @@ void YKDelayTask(unsigned int count) {
 	delayedTask->state = T_BLOCKED;
 	delayedTask->delayCount = count;
 	insertDelayQueue(delayedTask);
-	printDelayQueue();
+	//printDelayQueue();
 	asm("int 0x20");
 	return;
 
