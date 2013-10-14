@@ -21,6 +21,7 @@ void tickClock() {
 	
 	current = delayQueue.head;
 	if (delayQueue.size == 1) {
+		current->delayCount--;
 		if (current->delayCount == 0) {
 			delayQueue.head = null;
 			delayQueue.size = 0;
@@ -29,12 +30,11 @@ void tickClock() {
 			current->state = T_READY;
 			insertReadyQueue(current);
 			return;
-		} else {
-			current->delayCount--;
-			return;
 		}
+		return; 
 	}
 
+	current->delayCount--;
 	while (current != null) {
 		current = delayQueue.head;
 		if (current->delayCount == 0) {
@@ -50,7 +50,6 @@ void tickClock() {
 			insertReadyQueue(temp);
 			current = delayQueue.head;
 		} else {
-			current->delayCount--;
 			return;
 		}
 	}

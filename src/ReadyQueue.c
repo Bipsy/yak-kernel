@@ -84,7 +84,7 @@ TCB* peekReadyQueue() {
 
 	if (readyQueue.size == 0) {
 		return null;
-	} else {
+	} else {		
 		return readyQueue.head;
 	}
 		
@@ -127,10 +127,10 @@ TCB* removeReadyQueue() {
 void printReadyQueue() {
 	TCB* current;
 
-	current = readyQueue.head;
-	printString("Printing Ready Queue with size ");
-	printInt(readyQueue.size);
-	printNewLine();
+	//current = readyQueue.head;
+	//printString("Printing Ready Queue with size ");
+	//printInt(readyQueue.size);
+	//printNewLine();
 	
 	while (current != null) {
 		printInt(current->priority);

@@ -11,7 +11,7 @@ unsigned int YKTickCounter = 0;
 
 //Kernel Accessible Variables
 static unsigned int ISRCallDepth = 0;
-TCB* currentTask;
+TCB* currentTask = null;
 ReadyQueue readyQueue;
 DelayQueue delayQueue;
 static TaskBlock taskBlock;
@@ -182,7 +182,6 @@ void YKDelayTask(unsigned int count) {
 	delayedTask->state = T_BLOCKED;
 	delayedTask->delayCount = count;
 	insertDelayQueue(delayedTask);
-	//printDelayQueue();
 	asm("int 0x20");
 	return;
 
