@@ -10,7 +10,7 @@ void initializeReadyQueue() {
 	readyQueue.tail = null;
 }
 
-void insertReadyQueue(TCB* tcb) {
+unsigned int insertReadyQueue(TCB* tcb) {
 
 	TCB* temp;
 
@@ -23,9 +23,6 @@ void insertReadyQueue(TCB* tcb) {
 		tcb->next = null;
 		tcb->prev = null;
 		readyQueue.size = 1;
-		//printString("readyQueue size is ");
-		//printInt(readyQueue.size);
-		//printNewLine();
 		return;
 	}
 
@@ -44,9 +41,6 @@ void insertReadyQueue(TCB* tcb) {
 			readyQueue.tail->prev = tcb;
 			readyQueue.head = tcb;
 			readyQueue.size++;
-			//printString("readyQueue size is ");
-			//printInt(readyQueue.size);
-			//printNewLine();
 			return;
 		}
 	}
@@ -80,13 +74,9 @@ void insertReadyQueue(TCB* tcb) {
 
 }
 
-TCB* peekReadyQueue() {
+TCB* peekReadyQueue() {	
 
-	if (readyQueue.size == 0) {
-		return null;
-	} else {		
-		return readyQueue.head;
-	}
+	return readyQueue.head;
 		
 }
 

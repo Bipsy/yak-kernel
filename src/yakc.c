@@ -86,7 +86,6 @@ void YKIdleTask(void) {
 void YKScheduler(void) {
 
 	TCB* readyTask; 
-	//printString("We are in scheduler\n");
 	YKEnterMutex();
 	if (kernelState == K_BLOCKED) return;
 	readyTask = peekReadyQueue();
@@ -106,17 +105,13 @@ void YKScheduler(void) {
 
 void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 
-	TCB* newTask;
-	//printInt(priority);
-	//printNewLine();	
+	TCB* newTask;	
 	
 	//Obtain a TCB
-	//printString("Obtain a TCB\n");
 	newTask = getNewTCB();
 	if (newTask == null) exit(NEW_TASK_FAILED);
 
 	//Fill TCB
-	//printString("Fill TCB\n");
 	newTask->tid = 0;
 	newTask->priority = priority;
 	newTask->stackPointer = ((void*)((int*) taskStack - 12));
@@ -126,7 +121,6 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	newTask->prev = null;
 
 	//Set up Stack
-	//printString("Set up Stack\n");
 	asm("push bx");
 	asm("push cx");
 	asm("mov bx, [bp+6]"); //Get address of stack
@@ -137,12 +131,7 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	asm("pop cx");
 	asm("pop bx");
 
-	//Insert into ready queue
-	//printString("Insert into ready queue\n");
 	insertReadyQueue(newTask);
-	//printString("Printing ready queue at end of new task\n");
-	//printReadyQueue();
-	//printString("Call scheduler\n");
 	asm("int 0x20");
 	return; 
 
@@ -175,13 +164,17 @@ void YKRun(void) {
 void YKDelayTask(unsigned int count) {
 
 	TCB* delayedTask;
+	unsigned int size;
 
 	if (count == 0) return;
 
 	delayedTask = removeReadyQueue();
 	delayedTask->state = T_BLOCKED;
 	delayedTask->delayCount = count;
-	insertDelayQueue(delayedTask);
+	size = insertDelayQueue(delayedTask);
+	if (size > 1) {
+		size = size;
+	}
 	asm("int 0x20");
 	return;
 

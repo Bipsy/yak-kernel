@@ -17,7 +17,6 @@ void tickClock() {
 	
 	//Size == 0
 	if (delayQueue.size == 0) return;
-	//printDelayQueue();
 	
 	current = delayQueue.head;
 	if (delayQueue.size == 1) {
