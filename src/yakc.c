@@ -91,8 +91,8 @@ void YKScheduler(void) {
 	readyTask = peekReadyQueue();
 	if (readyTask == null) exit(READY_QUEUE_EMPTY);
 	if (readyTask != currentTask) {
-		currentTask->state = T_READY;
 		currentTask = readyTask;
+		currentTask->state = T_READY;
 		YKCtxSwCount++;
 		readyTask->state = T_RUNNING;
 		YKDispatcher(readyTask);
@@ -171,7 +171,7 @@ void YKDelayTask(unsigned int count) {
 	delayedTask = removeReadyQueue();
 	delayedTask->state = T_BLOCKED;
 	delayedTask->delayCount = count;
-	size = insertDelayQueue(delayedTask);
+	insertDelayQueue(delayedTask);
 	if (size > 1) {
 		size = size;
 	}

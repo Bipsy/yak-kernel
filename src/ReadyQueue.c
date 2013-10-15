@@ -10,7 +10,7 @@ void initializeReadyQueue() {
 	readyQueue.tail = null;
 }
 
-unsigned int insertReadyQueue(TCB* tcb) {
+void insertReadyQueue(TCB* tcb) {
 
 	TCB* temp;
 

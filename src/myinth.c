@@ -1,5 +1,6 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
+#include "../include/DelayQueue.h"
 
 static char tick[5] = "TICK ";
 static char keypress[10] = "KEYPRESS (";
@@ -26,7 +27,7 @@ void tickHandler() {
 	printInt(YKTickCounter);
 	YKExitMutex();
 	printNewLine();
-	YKTickHandler();
+	tickClock();
 	return;
 
 }

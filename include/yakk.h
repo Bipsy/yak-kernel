@@ -4,7 +4,7 @@
 #include "yaku.h"
 
 #define null 0
-#define IDLETASKSTACKSIZE 10
+#define IDLETASKSTACKSIZE 256
 
 //Kernel Data Structures
 
