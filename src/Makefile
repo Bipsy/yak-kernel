@@ -1,8 +1,8 @@
 lab4.bin:	lab4.s
 			nasm lab4.s -o lab4.bin -l lab4.lst
 
-lab4.s:		clib.s myinth.s yaks.s yakc.s ReadyQueue.s DelayQueue.s lab4d_app.s
-			cat clib.s myisr.s myinth.s yaks.s yakc.s ReadyQueue.s DelayQueue.s lab4d_app.s > lab4.s
+lab4.s:		clib.s myinth.s yakc.s ReadyQueue.s DelayQueue.s PendQueue.s lab4d_app.s
+			cat clib.s myisr.s myinth.s yaks.s yakc.s ReadyQueue.s DelayQueue.s PendQueue.s lab4d_app.s > lab4.s
 
 myinth.s:		myinth.c
 			cpp myinth.c myinth.i
@@ -16,6 +16,10 @@ DelayQueue.s:   DelayQueue.c
 				cpp DelayQueue.c DelayQueue.i
 				c86 -g DelayQueue.i DelayQueue.s
 
+PendQueue.s:	PendQueue.c
+				cpp PendQueue.c PendQueue.i
+				c86 -g PendQueue.i PendQueue.s
+
 lab4d_app.s:	lab4d_app.c
 			cpp lab4d_app.c lab4d_app.i
 			c86 -g lab4d_app.i lab4d_app.s
@@ -26,4 +30,4 @@ yakc.s:		yakc.c
 
 clean:		
 			rm lab4.bin lab4.lst lab4.s myinth.s myinth.i DelayQueue.s DelayQueue.i yakc.s yakc.i
-			rm ReadyQueue.i ReadyQueue.s lab4d_app.i lab4d_app.s
+			rm ReadyQueue.i ReadyQueue.s PendQueue.i PendQueue.s lab4d_app.i lab4d_app.s
