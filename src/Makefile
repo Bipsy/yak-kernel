@@ -1,7 +1,7 @@
 lab4.bin:	lab4.s
 			nasm lab4.s -o lab4.bin -l lab4.lst
 
-lab4.s:		clib.s myisr.s myinth.s yaks.s yakc.s ReadyQueue.s DelayQueue.s lab4d_app.s
+lab4.s:		clib.s myinth.s yaks.s yakc.s ReadyQueue.s DelayQueue.s lab4d_app.s
 			cat clib.s myisr.s myinth.s yaks.s yakc.s ReadyQueue.s DelayQueue.s lab4d_app.s > lab4.s
 
 myinth.s:		myinth.c

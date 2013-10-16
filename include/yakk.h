@@ -26,6 +26,8 @@ typedef struct TaskBlock {
 	unsigned int nextFreeTCB;	
 } TaskBlock;
 
+typedef int YKSEM;
+
 //Kernel API
 void YKInitialize(void);
 
@@ -49,11 +51,11 @@ void YKDispatcher(TCB* readyTask);
 
 void YKTickHandler(void);
 
-//YKSEM* YKSemCreate(int initialValue);
+YKSEM* YKSemCreate(int initialValue);
 
-//void YKSemPend(YKSEM* semaphore);
+void YKSemPend(YKSEM* semaphore);
 
-//void YKSemPost(YKSEM* semaphore);
+void YKSemPost(YKSEM* semaphore);
 
 //YKQ* YKQCreate(void** start, unsigned size);
 

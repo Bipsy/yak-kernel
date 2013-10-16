@@ -22,20 +22,6 @@ static enum KernelState kernelState = K_BLOCKED;
 #define NEW_TASK_FAILED 1
 #define READY_QUEUE_EMPTY 2
 
-void YKEnterMutex(void) {
-
-	//disable interrupts
-	asm("cli");
-
-}
-
-void YKExitMutex(void) {
-
-	//Conditionally enable interrupts
-	asm("sti");
-
-}
-
 void YKEnterISR(void) {
 
 	ISRCallDepth++;
