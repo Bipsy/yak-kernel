@@ -55,12 +55,6 @@ void YKDispatcher(TCB* readyTask);
 
 void YKTickHandler(void);
 
-YKSEM* YKSemCreate(int initialValue);
-
-void YKSemPend(YKSEM* semaphore);
-
-void YKSemPost(YKSEM* semaphore);
-
 //YKQ* YKQCreate(void** start, unsigned size);
 
 //void YKQPend(YKQ* queue);

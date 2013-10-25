@@ -1,6 +1,8 @@
 #ifndef SEMAPHORE_H
 #define SEMAPHORE_H
 
+#include "PriorityQueue.h"
+
 typedef struct Semaphore {
 	int value;
 	PriorityQueue queue;
