@@ -3,13 +3,13 @@
 
 typedef struct Semaphore {
 	int value;
-	PendQueue queue;
+	PriorityQueue queue;
 } YKSEM;
 
 YKSEM* YKSemCreate(int initialValue);
 
-YKSemPend(YKSEM* semaphore);
+void YKSemPend(YKSEM* semaphore);
 
-YKSemPost(YKSEM* semaphore);
+void YKSemPost(YKSEM* semaphore);
 
 #endif

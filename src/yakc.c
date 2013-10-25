@@ -1,7 +1,7 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
 #include "../include/yaku.h"
-#include "../include/ReadyQueue.h"
+#include "../include/PriorityQueue.h"
 #include "../include/DelayQueue.h"
 
 //User Accessible Variables
@@ -12,15 +12,17 @@ unsigned int YKTickCounter = 0;
 //Kernel Accessible Variables
 static unsigned int ISRCallDepth = 0;
 TCB* currentTask = null;
-ReadyQueue readyQueue;
+PriorityQueue readyQueue;
 DelayQueue delayQueue;
 static TaskBlock taskBlock;
+static SemBlock semClock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 static enum KernelState kernelState = K_BLOCKED;
 
 //Error Codes
 #define NEW_TASK_FAILED 1
 #define READY_QUEUE_EMPTY 2
+#define NEW_SEM_FAILED 3
 
 void YKEnterISR(void) {
 
@@ -40,7 +42,7 @@ void YKInitialize(void) {
 	YKEnterMutex();
 
 	//Set up queues
-	initializeReadyQueue();
+	initializeReadyQueue(&readyQueue);
 	initializeDelayQueue();
 
 	//Set up Task Block
@@ -74,7 +76,7 @@ void YKScheduler(void) {
 	TCB* readyTask; 
 	YKEnterMutex();
 	if (kernelState == K_BLOCKED) return;
-	readyTask = peekReadyQueue();
+	readyTask = peekReadyQueue(&readyQueue);
 	if (readyTask == null) exit(READY_QUEUE_EMPTY);
 	if (readyTask != currentTask) {
 		currentTask = readyTask;
@@ -117,7 +119,7 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	asm("pop cx");
 	asm("pop bx");
 
-	insertReadyQueue(newTask);
+	insertReadyQueue(&readyQueue, newTask);
 	asm("int 0x20");
 	return; 
 
@@ -130,6 +132,19 @@ TCB* getNewTCB(void) {
           task = &taskBlock.TCBPool[taskBlock.nextFreeTCB];
 		taskBlock.nextFreeTCB++;
 		return task;
+	} else {
+		return null;
+	}
+
+}
+
+YKSEM* getNewSem(void) {
+	
+	YKSEM* semaphore;
+	if (semBlock.nextFreeSem < MAX_SEMS) {
+          semaphore = &semBlock.SemPool[semBlock.nextFreeSem];
+		semBlock.nextFreeSem++;
+		return semaphore;
 	} else {
 		return null;
 	}
@@ -150,17 +165,13 @@ void YKRun(void) {
 void YKDelayTask(unsigned int count) {
 
 	TCB* delayedTask;
-	unsigned int size;
 
 	if (count == 0) return;
 
-	delayedTask = removeReadyQueue();
+	delayedTask = removeReadyQueue(&readyQueue);
 	delayedTask->state = T_BLOCKED;
 	delayedTask->delayCount = count;
 	insertDelayQueue(delayedTask);
-	if (size > 1) {
-		size = size;
-	}
 	asm("int 0x20");
 	return;
 

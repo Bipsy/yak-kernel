@@ -2,6 +2,7 @@
 #define YAKK_H
 
 #include "yaku.h"
+#include "Semaphore.h"
 
 #define null 0
 #define IDLETASKSTACKSIZE 256
@@ -26,7 +27,10 @@ typedef struct TaskBlock {
 	unsigned int nextFreeTCB;	
 } TaskBlock;
 
-typedef int YKSEM;
+typedef struct SemBlock {
+	YKSEM SemPool[MAX_SEMS];
+	unsigned int nextFreeSem;
+}
 
 //Kernel API
 void YKInitialize(void);
@@ -70,6 +74,8 @@ void YKSemPost(YKSEM* semaphore);
 //void YKEVentReset(YKEVENT* event, unsigned eventMask);
 
 TCB* getNewTCB(void);
+
+YKSEM* getNewSem(void);
 
 void YKRun(void);
 

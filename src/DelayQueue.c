@@ -1,9 +1,10 @@
 #include "../include/DelayQueue.h"
-#include "../include/ReadyQueue.h"
+#include "../include/PriorityQueue.h"
 #include "../include/yakk.h"
 #include "../include/clib.h"
 
 extern DelayQueue delayQueue;
+extern ReadyQueue readyQueue;
 
 void initializeDelayQueue() {
 	delayQueue.size = 0;
@@ -27,7 +28,7 @@ void tickClock() {
 			current->next = null;
 			current->prev = null;
 			current->state = T_READY;
-			insertReadyQueue(current);
+			insertPriorityQueue(&queue, current);
 			return;
 		}
 		return; 
@@ -46,7 +47,7 @@ void tickClock() {
 			current->state = T_READY;
 			temp = current;
 			delayQueue.size--;
-			insertReadyQueue(temp);
+			insertPriorityQueue(&queue, temp);
 			current = delayQueue.head;
 		} else {
 			return;
