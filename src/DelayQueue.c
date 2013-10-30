@@ -4,7 +4,7 @@
 #include "../include/clib.h"
 
 extern DelayQueue delayQueue;
-extern ReadyQueue readyQueue;
+extern PriorityQueue readyQueue;
 
 void initializeDelayQueue() {
 	delayQueue.size = 0;
@@ -28,7 +28,7 @@ void tickClock() {
 			current->next = null;
 			current->prev = null;
 			current->state = T_READY;
-			insertPriorityQueue(&queue, current);
+			insertPriorityQueue(&readyQueue, current);
 			return;
 		}
 		return; 
@@ -47,7 +47,7 @@ void tickClock() {
 			current->state = T_READY;
 			temp = current;
 			delayQueue.size--;
-			insertPriorityQueue(&queue, temp);
+			insertPriorityQueue(&readyQueue, temp);
 			current = delayQueue.head;
 		} else {
 			return;

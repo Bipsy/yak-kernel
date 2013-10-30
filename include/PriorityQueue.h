@@ -3,12 +3,6 @@
 
 #include "yakk.h"
 
-typedef struct PriorityQueue {
-	TCB* head;
-	TCB* tail;
-	unsigned int size;
-} PriorityQueue;
-
 void initializePriorityQueue(PriorityQueue* queue);
 
 void insertPriorityQueue(PriorityQueue* queue, TCB* tcb);

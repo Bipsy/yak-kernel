@@ -1,6 +1,8 @@
-#include "Semaphore.h"
-#include "yakk.h"
+#include "../include/yakk.h"
+#include "../include/clib.h"
+#include "../include/PriorityQueue.h"
 
+extern PriorityQueue readyQueue;
 
 YKSEM* YKSemCreate(int initialValue) {
 	YKSEM* newSemaphore;
@@ -22,9 +24,9 @@ void YKSemPend(YKSEM* semaphore) {
 	YKEnterMutex();
 	if (semaphore->value < 1) {
 		semaphore->value--;
-		runningTask = removeReadyQueue(&readyQueue);
+		runningTask = removePriorityQueue(&readyQueue);
 		runningTask->state = T_BLOCKED;
-		insertPriorityQueue(runningTask);
+		insertPriorityQueue((&(semaphore->queue)), runningTask);
 		asm("int 0x20");
 		return;
 

@@ -3,11 +3,6 @@
 
 #include "yakk.h"
 
-typedef struct DelayQueue {
-	TCB* head;
-	unsigned int size;
-} DelayQueue;
-
 void initializeDelayQueue(void);
 
 void tickClock(void);

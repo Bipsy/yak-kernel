@@ -19,11 +19,6 @@ static SemBlock semBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 static enum KernelState kernelState = K_BLOCKED;
 
-//Error Codes
-#define NEW_TASK_FAILED 1
-#define READY_QUEUE_EMPTY 2
-#define NEW_SEM_FAILED 3
-
 void YKEnterISR(void) {
 
 	ISRCallDepth++;
@@ -42,7 +37,7 @@ void YKInitialize(void) {
 	YKEnterMutex();
 
 	//Set up queues
-	initializeReadyQueue(&readyQueue);
+	initializePriorityQueue(&readyQueue);
 	initializeDelayQueue();
 
 	//Set up Task Block
@@ -76,7 +71,7 @@ void YKScheduler(void) {
 	TCB* readyTask; 
 	YKEnterMutex();
 	if (kernelState == K_BLOCKED) return;
-	readyTask = peekReadyQueue(&readyQueue);
+	readyTask = peekPriorityQueue(&readyQueue);
 	if (readyTask == null) exit(READY_QUEUE_EMPTY);
 	if (readyTask != currentTask) {
 		currentTask = readyTask;
@@ -119,7 +114,7 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	asm("pop cx");
 	asm("pop bx");
 
-	insertReadyQueue(&readyQueue, newTask);
+	insertPriorityQueue(&readyQueue, newTask);
 	asm("int 0x20");
 	return; 
 
@@ -168,7 +163,7 @@ void YKDelayTask(unsigned int count) {
 
 	if (count == 0) return;
 
-	delayedTask = removeReadyQueue(&readyQueue);
+	delayedTask = removePriorityQueue(&readyQueue);
 	delayedTask->state = T_BLOCKED;
 	delayedTask->delayCount = count;
 	insertDelayQueue(delayedTask);
