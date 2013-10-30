@@ -15,7 +15,7 @@ TCB* currentTask = null;
 PriorityQueue readyQueue;
 DelayQueue delayQueue;
 static TaskBlock taskBlock;
-static SemBlock semClock;
+static SemBlock semBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 static enum KernelState kernelState = K_BLOCKED;
 
