@@ -30,7 +30,7 @@ typedef struct TaskBlock {
 typedef struct SemBlock {
 	YKSEM SemPool[MAX_SEMS];
 	unsigned int nextFreeSem;
-}
+} SemBlock;
 
 //Kernel API
 void YKInitialize(void);
