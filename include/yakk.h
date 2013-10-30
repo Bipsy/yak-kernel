@@ -4,7 +4,7 @@
 #include "yaku.h"
 
 #define null 0
-#define IDLETASKSTACKSIZE 256
+#define IDLETASKSTACKSIZE 512
 
 //Error Codes
 #define NEW_TASK_FAILED 1
@@ -61,6 +61,7 @@ void YKNewTask(void (* task) (void), void *taskStack, unsigned char priority);
 void YKDelayTask(unsigned count);
 void YKEnterISR(void);
 void YKExitISR(void);
+unsigned int YKGetISRCallDepth(void);
 void YKScheduler(void);
 void YKDispatcher(TCB* readyTask);
 void YKTickHandler(void);

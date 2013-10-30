@@ -49,7 +49,9 @@ void YKSemPost(YKSEM* semaphore) {
 	readyTask->state = T_READY;
 	insertPriorityQueue(&readyQueue, readyTask);
 	YKExitMutex();
-	asm("int 0x20");
+	if (YKGetISRCallDepth() == 0) {
+		asm("int 0x20");
+	}
 	return;
 
 }

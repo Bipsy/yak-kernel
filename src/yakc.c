@@ -32,6 +32,10 @@ void YKExitISR(void) {
 
 }
 
+unsigned int YKGetISRCallDepth(void) {
+	return ISRCallDepth;
+}
+
 void YKInitialize(void) {
 
 	YKEnterMutex();
