@@ -1,3 +1,11 @@
+YKIdleTask:
+	
+yak_loop:
+		cli
+		inc		word [YKIdleCount]
+		sti		
+		jmp		yak_loop
+
 YKDispatcher:
 
 		cli

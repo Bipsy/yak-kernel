@@ -12,14 +12,13 @@ void resetHandler() {
 
 void tickHandler() {
 
+	int localCounter = 0;
+
 	YKEnterMutex();
-	YKTickCounter++;
+	localCounter = ++YKTickCounter;
 	YKExitMutex();
-	printNewLine();
-	printString("Tick ");
-	YKEnterMutex();
-	printInt(YKTickCounter);
-	YKExitMutex();
+	printString("\nTick ");
+	printInt(localCounter);
 	printNewLine();
 	tickClock();
 	return;

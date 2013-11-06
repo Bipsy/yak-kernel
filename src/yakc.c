@@ -57,19 +57,6 @@ void YKInitialize(void) {
 
 }
 
-void YKIdleTask(void) {
-
-	//printString("IdleTaskStarted ran");
-	//printNewLine();
-
-	while (1) {
-		YKEnterMutex();
-		YKIdleCount++;
-		YKExitMutex();
-	}
-
-}
-
 void YKScheduler(void) {
 
 	TCB* readyTask; 
