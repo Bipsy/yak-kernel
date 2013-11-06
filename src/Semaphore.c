@@ -27,6 +27,7 @@ void YKSemPend(YKSEM* semaphore) {
 		runningTask = removePriorityQueue(&readyQueue);
 		runningTask->state = T_BLOCKED;
 		insertPriorityQueue((&(semaphore->queue)), runningTask);
+		YKExitMutex();
 		asm("int 0x20");
 		return;
 
@@ -45,7 +46,10 @@ void YKSemPost(YKSEM* semaphore) {
 	YKEnterMutex();
 	semaphore->value++;
 	readyTask = removePriorityQueue(&(semaphore->queue));
-	if (readyTask == null) return;
+	if (readyTask == null) {
+		YKExitMutex();
+		return;
+	}
 	readyTask->state = T_READY;
 	insertPriorityQueue(&readyQueue, readyTask);
 	YKExitMutex();
