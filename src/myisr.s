@@ -16,12 +16,12 @@ TICK:
 		push 	bp
 		call		YKGetISRCallDepth
 		test		ax, ax
-		jnz		tick_loop
+		jnz		tick_1
 		mov		si, [currentTask]
 		add		si, word 0x4
 		mov 		[si], sp
 
-tick_loop:
+tick_1:
 		call	YKEnterISR
 
 		sti					;enabling interrupts
@@ -58,12 +58,12 @@ KEYBOARD:
 		push 	bp
 		call		YKGetISRCallDepth
 		test		ax, ax
-		jnz		keyboard_loop
+		jnz		keyboard_1
 		mov		si, [currentTask]
 		add		si, word 0x4
 		mov 		[si], sp	
 
-keyboard_loop:		
+keyboard_1:		
 		call	YKEnterISR
 		
 		sti						;enabling interrupts

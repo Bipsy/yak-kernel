@@ -1,9 +1,10 @@
 YKIdleTask:
 	
+		push		bp
+		mov		bp, sp
+
 yak_loop:
-		cli
-		inc		word [YKIdleCount]
-		sti		
+		inc		word [YKIdleCount]		
 		jmp		yak_loop
 
 YKDispatcher:

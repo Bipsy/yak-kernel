@@ -17,7 +17,11 @@ void tickClock() {
    	TCB* temp;
 	
 	//Size == 0
-	if (delayQueue.size == 0) return;
+	YKEnterMutex();
+	if (delayQueue.size == 0) {
+		YKExitMutex();		
+		return;
+	}
 	
 	current = delayQueue.head;
 	if (delayQueue.size == 1) {
@@ -28,9 +32,12 @@ void tickClock() {
 			current->next = null;
 			current->prev = null;
 			current->state = T_READY;
+			YKExitMutex();
 			insertPriorityQueue(&readyQueue, current);
+			//printString("\nAfter insert\n");
 			return;
 		}
+		YKExitMutex();
 		return; 
 	}
 
@@ -50,6 +57,7 @@ void tickClock() {
 			insertPriorityQueue(&readyQueue, temp);
 			current = delayQueue.head;
 		} else {
+			YKExitMutex();
 			return;
 		}
 	}
@@ -65,11 +73,13 @@ void insertDelayQueue(TCB* tcb) {
 	if (tcb == null) return;
     
 	//Size = 0
+	YKEnterMutex();
      if (delayQueue.size == 0) {
          delayQueue.head = tcb;
          tcb->next = null;
          tcb->prev = null;
          delayQueue.size++;
+		YKExitMutex();
          return;
      }
     
@@ -89,8 +99,9 @@ void insertDelayQueue(TCB* tcb) {
 			}
             	current->prev = tcb;
             	delayQueue.size++;
-				tcb->delayCount = tcb->delayCount - oldSumCount;
+			tcb->delayCount = tcb->delayCount - oldSumCount;
             	current->delayCount = current->delayCount - tcb->delayCount;
+			YKExitMutex();
             	return;
         	}
         	if (current->next == null) {
@@ -99,7 +110,7 @@ void insertDelayQueue(TCB* tcb) {
         	    tcb->next = null;
         	    delayQueue.size++;
         	    tcb->delayCount = tcb->delayCount - sumCount;
-			//printDelayQueue();
+			YKExitMutex();
         	    return;
         	}
         	current = current->next;

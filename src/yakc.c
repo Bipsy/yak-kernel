@@ -14,25 +14,28 @@ static unsigned int ISRCallDepth = 0;
 TCB* currentTask = null;
 PriorityQueue readyQueue;
 DelayQueue delayQueue;
-static TaskBlock taskBlock;
+TaskBlock taskBlock;
 static SemBlock semBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 static enum KernelState kernelState = K_BLOCKED;
 
 void YKEnterISR(void) {
-
+	YKEnterMutex();
 	ISRCallDepth++;
-
+	YKExitMutex();
 }
 
 void YKExitISR(void) {
-
+	YKEnterMutex();
 	ISRCallDepth--;
-	if (ISRCallDepth == 0) YKScheduler();
-
+	if (ISRCallDepth == 0) {
+		YKExitMutex();		
+		YKScheduler();
+	}
 }
 
 unsigned int YKGetISRCallDepth(void) {
+		
 	return ISRCallDepth;
 }
 
