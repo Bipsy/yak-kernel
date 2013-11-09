@@ -10,6 +10,7 @@
 #define NEW_TASK_FAILED 1
 #define READY_QUEUE_EMPTY 2
 #define NEW_SEM_FAILED 3
+#define NEW_QUEUE_FAILED 4
 
 //Kernel Data Structures
 
@@ -52,6 +53,18 @@ typedef struct SemBlock {
 	unsigned int nextFreeSem;
 } SemBlock;
 
+typedef struct MessageQueue {
+	void** messages;
+	unsigned int currentSize;
+	unsigned int maxSize;
+	PriorityQueue queue;
+} YKQ;
+
+typedef struct MessageQueueBlock {
+	YKQ QueuePool[MAX_QUEUES];
+	unsigned int nextFreeQueue;
+} MsgQueueBlock;
+
 //Kernel API
 void YKInitialize(void);
 void YKEnterMutex(void);
@@ -68,14 +81,15 @@ void YKTickHandler(void);
 YKSEM* YKSemCreate(int initialValue);
 void YKSemPend(YKSEM* semaphore);
 void YKSemPost(YKSEM* semaphore);
-//YKQ* YKQCreate(void** start, unsigned size);
-//void YKQPend(YKQ* queue);
-//int YKQPost(YKQ* queue, void* msg);
+YKQ* YKQCreate(void** start, unsigned size);
+void* YKQPend(YKQ* queue);
+int YKQPost(YKQ* queue, void* msg);
 //YKEVENT* YKEventCreate(unsigned initialValue);
 //void YKEventSet(YKEVENT* event, unsigned eventMask);
 //void YKEVentReset(YKEVENT* event, unsigned eventMask);
 TCB* getNewTCB(void);
 YKSEM* getNewSem(void);
+YKQ* getNewQueue(void);
 void YKRun(void);
 
 #endif

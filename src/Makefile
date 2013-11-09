@@ -1,8 +1,8 @@
 lab5.bin:	lab5.s
 			nasm lab5.s -o lab5.bin -l lab5.lst
 
-lab5.s:		clib.s myinth.s yakc.s PriorityQueue.s DelayQueue.s Semaphore.s lab5app.s
-			cat clib.s myisr.s myinth.s yaks.s yakc.s PriorityQueue.s DelayQueue.s Semaphore.s lab5app.s > lab5.s
+lab5.s:		clib.s myinth.s yakc.s PriorityQueue.s DelayQueue.s Semaphore.s MessageQueue.s lab6app.s
+			cat clib.s myisr.s myinth.s yaks.s yakc.s PriorityQueue.s DelayQueue.s Semaphore.s MessageQueue.s lab6app.s > lab5.s
 
 myinth.s:		myinth.c
 			cpp myinth.c myinth.i
@@ -20,13 +20,17 @@ Semaphore.s:	Semaphore.c
 			cpp Semaphore.c Semaphore.i
 			c86 -g Semaphore.i Semaphore.s
 
-lab5app.s:	lab5app.c
-			cpp lab5app.c lab5app.i
-			c86 -g lab5app.i lab5app.s
+MessageQueue.s:	MessageQueue.c
+			cpp MessageQueue.c MessageQueue.i
+			c86 -g MessageQueue.i MessageQueue.s
+
+lab6app.s:	lab6app.c
+			cpp lab6app.c lab6app.i
+			c86 -g lab6app.i lab6app.s
 
 yakc.s:		yakc.c
 			cpp yakc.c yakc.i
 			c86 -g yakc.i yakc.s
 
 clean:		
-			rm lab5.bin lab5.lst lab5.s myinth.s myinth.i DelayQueue.s DelayQueue.i yakc.s yakc.i PriorityQueue.i PriorityQueue.s Semaphore.i Semaphore.s lab5app.i lab5app.s
+			rm lab5.bin lab5.lst lab5.s myinth.s myinth.i DelayQueue.s DelayQueue.i yakc.s yakc.i PriorityQueue.i PriorityQueue.s Semaphore.i Semaphore.s MessageQueue.i MessageQueue.s lab6app.i lab6app.s

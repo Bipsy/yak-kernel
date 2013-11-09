@@ -14,8 +14,9 @@ static unsigned int ISRCallDepth = 0;
 TCB* currentTask = null;
 PriorityQueue readyQueue;
 DelayQueue delayQueue;
-TaskBlock taskBlock;
+static TaskBlock taskBlock;
 static SemBlock semBlock;
+static MsgQueueBlock msgQueueBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 static enum KernelState kernelState = K_BLOCKED;
 
@@ -118,8 +119,7 @@ TCB* getNewTCB(void) {
 	
 	TCB* task;
 	if (taskBlock.nextFreeTCB < MAX_TASKS + 1) {
-          task = &taskBlock.TCBPool[taskBlock.nextFreeTCB];
-		taskBlock.nextFreeTCB++;
+          task = &taskBlock.TCBPool[taskBlock.nextFreeTCB++];
 		return task;
 	} else {
 		return null;
@@ -131,9 +131,20 @@ YKSEM* getNewSem(void) {
 	
 	YKSEM* semaphore;
 	if (semBlock.nextFreeSem < MAX_SEMS) {
-          semaphore = &semBlock.SemPool[semBlock.nextFreeSem];
-		semBlock.nextFreeSem++;
+          semaphore = &semBlock.SemPool[semBlock.nextFreeSem++];
 		return semaphore;
+	} else {
+		return null;
+	}
+
+}
+
+YKQ* getNewQueue(void) {
+	
+	YKQ* messageQueue;
+	if (msgQueueBlock.nextFreeQueue < MAX_QUEUES) {
+		messageQueue = &msgQueueBlock.QueuePool[msgQueueBlock.nextFreeQueue++];
+		return messageQueue;
 	} else {
 		return null;
 	}
@@ -144,7 +155,6 @@ void YKRun(void) {
 
 	YKEnterMutex();
 	kernelState = K_RUNNING;
-	//printReadyQueue();
 	YKScheduler();
 	YKExitMutex();
 	return;

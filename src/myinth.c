@@ -1,10 +1,11 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
-#include "../include/DelayQueue.h"
+#include "../include/lab6defs.h"
 
-extern int KeyBuffer;
 extern unsigned int YKTickCounter;
-extern YKSEM* NSemPtr;
+extern int GlobalFlag;
+extern struct msg MsgArray[];
+extern YKQ* MsgQPtr;
 
 void resetHandler() {
 	exit(0);
@@ -12,34 +13,20 @@ void resetHandler() {
 
 void tickHandler() {
 
-	int localCounter = 0;
+	static int next = 0;
+	static int data = 0;
 
-	YKEnterMutex();
-	localCounter = ++YKTickCounter;
-	YKExitMutex();
-	printString("\nTick ");
-	printInt(localCounter);
-	printNewLine();
-	tickClock();
-	return;
+	MsgArray[next].tick = YKTickCounter;
+	data = (data + 89) % 100;
+	MsgArray[next].data = data;
+	if (YKQPost(MsgQPtr, (void*) &(MsgArray[next])) == 0)
+		printString("  TickISR: queue overflow! \n");
+	else if (++next >= MSGARRAYSIZE)
+		next = 0;
 
 }
 
 void keyboardHandler() {
 
-	int i;	
-
-	if (KeyBuffer == 'd') {
-		printString("\nDELAY KEY PRESSED\n");
-		for (i = 0; i < 5000; i++);
-		printString("\nDELAY COMPLETE\n");		
-	} else if (KeyBuffer == 'p') {
-		YKSemPost(NSemPtr);
-	} else {
-		printString("\nKEYPRESS (");
-		printChar((char) KeyBuffer);
-		printString(") IGNORED\n");
-	}
-
-	return;
+	GlobalFlag = 1;
 }
