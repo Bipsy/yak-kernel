@@ -155,12 +155,13 @@ YKQ* getNewQueue(void) {
 
 YKEVENT* getNewEvent(void) {
 	YKEVENT* event;
-	if (eventQueue.newFreeQueue < MAX_EVENTS) {
-		event = &eventBlock.eventPool[eventBlock.newFreeEvent++];
+	if (eventBlock.newFreeEvent < MAX_EVENTS) {
+		event = &eventBlock.EventPool[eventBlock.newFreeEvent++];
 		return event;
-	else {
+	} else {
 		return null;
 	}
+}
 
 void YKRun(void) {
 

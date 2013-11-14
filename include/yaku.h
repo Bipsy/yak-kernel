@@ -4,5 +4,6 @@
 #define MAX_TASKS 10
 #define MAX_SEMS 10
 #define MAX_QUEUES 10
+#define MAX_EVENTS 10
 
 #endif

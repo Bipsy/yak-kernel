@@ -103,7 +103,7 @@ int YKQPost(YKQ* queue, void* msg);
 YKEVENT* YKEventCreate(unsigned initialValue);
 unsigned YKEventPend(YKEVENT* event, unsigned eventMask, int waitMode);
 void YKEventSet(YKEVENT* event, unsigned eventMask);
-void YKEVentReset(YKEVENT* event, unsigned eventMask);
+void YKEventReset(YKEVENT* event, unsigned eventMask);
 TCB* getNewTCB(void);
 YKSEM* getNewSem(void);
 YKQ* getNewQueue(void);

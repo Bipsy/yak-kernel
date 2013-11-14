@@ -1,4 +1,6 @@
 #include "../include/yakk.h"
+#include "../include/clib.h"
+#include "../include/PriorityQueue.h"
 
 extern PriorityQueue readyQueue;
 
@@ -33,9 +35,9 @@ unsigned YKEventPend(YKEVENT* event, unsigned eventMask, int waitMode) {
 			asm("int 0x20");
 			return event->mask;
 		}
-	} else if (waitMod == EVENT_WAIT_ALL) {
+	} else if (waitMode == EVENT_WAIT_ALL) {
 		YKEnterMutex();		
-		if (event->mask & eventMask == eventPask) { 
+		if (event->mask & eventMask == eventMask) { 
 			return event->mask;
 		} else {
 			runningTask = removePriorityQueue(&readyQueue);
