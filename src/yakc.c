@@ -17,6 +17,7 @@ DelayQueue delayQueue;
 static TaskBlock taskBlock;
 static SemBlock semBlock;
 static MsgQueueBlock msgQueueBlock;
+static EventBlock eventBlock;
 static int idleTaskStack[IDLETASKSTACKSIZE];
 static enum KernelState kernelState = K_BLOCKED;
 
@@ -151,6 +152,15 @@ YKQ* getNewQueue(void) {
 	}
 
 }
+
+YKEVENT* getNewEvent(void) {
+	YKEVENT* event;
+	if (eventQueue.newFreeQueue < MAX_EVENTS) {
+		event = &eventBlock.eventPool[eventBlock.newFreeEvent++];
+		return event;
+	else {
+		return null;
+	}
 
 void YKRun(void) {
 

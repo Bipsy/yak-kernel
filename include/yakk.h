@@ -11,6 +11,12 @@
 #define READY_QUEUE_EMPTY 2
 #define NEW_SEM_FAILED 3
 #define NEW_QUEUE_FAILED 4
+#define NEW_EVENT_FAILED 5
+#define EVENT_PEND_ERROR 6
+
+//Event Codes
+#define EVENT_WAIT_ANY 0
+#define EVENT_WAIT_ALL 1
 
 //Kernel Data Structures
 
@@ -65,6 +71,16 @@ typedef struct MessageQueueBlock {
 	unsigned int nextFreeQueue;
 } MsgQueueBlock;
 
+typedef struct Event {
+	unsigned int mask;
+	PriorityQueue queue;
+} YKEVENT;
+
+typedef struct EventBlock {
+	YKEVENT EventPool[MAX_EVENTS];
+	unsigned int newFreeEvent;
+} EventBlock;
+
 //Kernel API
 void YKInitialize(void);
 void YKEnterMutex(void);
@@ -84,12 +100,14 @@ void YKSemPost(YKSEM* semaphore);
 YKQ* YKQCreate(void** start, unsigned size);
 void* YKQPend(YKQ* queue);
 int YKQPost(YKQ* queue, void* msg);
-//YKEVENT* YKEventCreate(unsigned initialValue);
-//void YKEventSet(YKEVENT* event, unsigned eventMask);
-//void YKEVentReset(YKEVENT* event, unsigned eventMask);
+YKEVENT* YKEventCreate(unsigned initialValue);
+unsigned YKEventPend(YKEVENT* event, unsigned eventMask, int waitMode);
+void YKEventSet(YKEVENT* event, unsigned eventMask);
+void YKEVentReset(YKEVENT* event, unsigned eventMask);
 TCB* getNewTCB(void);
 YKSEM* getNewSem(void);
 YKQ* getNewQueue(void);
+YKEVENT* getNewEvent(void);
 void YKRun(void);
 
 #endif
