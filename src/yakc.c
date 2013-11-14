@@ -33,6 +33,7 @@ void YKExitISR(void) {
 		YKExitMutex();		
 		YKScheduler();
 	}
+	YKExitMutex();
 }
 
 unsigned int YKGetISRCallDepth(void) {

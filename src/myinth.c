@@ -1,6 +1,7 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
 #include "../include/lab6defs.h"
+#include "../include/DelayQueue.h"
 
 extern unsigned int YKTickCounter;
 extern int GlobalFlag;
@@ -16,6 +17,11 @@ void tickHandler() {
 	static int next = 0;
 	static int data = 0;
 
+	tickClock();
+	YKEnterMutex();
+	YKTickCounter++;
+	YKExitMutex();
+
 	MsgArray[next].tick = YKTickCounter;
 	data = (data + 89) % 100;
 	MsgArray[next].data = data;
@@ -28,5 +34,7 @@ void tickHandler() {
 
 void keyboardHandler() {
 
+	YKEnterMutex();
 	GlobalFlag = 1;
+	YKExitMutex();
 }
