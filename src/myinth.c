@@ -1,6 +1,5 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
-#include "../include/lab6defs.h"
 #include "../include/DelayQueue.h"
 
 extern unsigned int YKTickCounter;

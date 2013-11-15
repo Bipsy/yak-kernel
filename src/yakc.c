@@ -92,7 +92,8 @@ void YKNewTask(void (*task)(void), void* taskStack, unsigned char priority) {
 	if (newTask == null) exit(NEW_TASK_FAILED);
 
 	//Fill TCB
-	newTask->tid = 0;
+	newTask->eventMask = 0;
+	newTask->waitMode = 2;
 	newTask->priority = priority;
 	newTask->stackPointer = ((void*)((int*) taskStack - 12));
 	newTask->state = T_READY;

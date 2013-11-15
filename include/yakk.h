@@ -13,6 +13,7 @@
 #define NEW_QUEUE_FAILED 4
 #define NEW_EVENT_FAILED 5
 #define EVENT_PEND_ERROR 6
+#define EVENT_SET_ERROR 7
 
 //Event Codes
 #define EVENT_WAIT_ANY 0
@@ -24,7 +25,8 @@ enum TaskState {T_BLOCKED, T_READY, T_RUNNING};
 enum KernelState {K_BLOCKED, K_RUNNING};
 
 typedef struct TCB {
-	unsigned int tid;
+	unsigned int eventMask;
+	unsigned char waitMode;
 	unsigned char priority;
 	void* stackPointer;	
 	enum TaskState state;	
