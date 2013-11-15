@@ -65,34 +65,32 @@ void YKEventSet(YKEVENT* event, unsigned eventMask) {
 	event->mask = event->mask | eventMask;
 	
 	current = event->queue.head;
-	while (current != null) {i
+	while (current != null) {
 		if ((current->waitMode == EVENT_WAIT_ALL && 
 			current->eventMask & event->mask == current->eventMask) ||
 			(current->waitMode == EVENT_WAIT_ANY &&
 			current->eventMask & event->mask)) {
-			if (current->eventMask & event->mask == current->eventMask) {
-				temp = current;
-				current = current->next;
+				
+			temp = current;
+			current = current->next;
 				if (temp->prev != null) {
-					temp->prev->next = temp->next;
-				} else {
-					event->queue.head = temp->next;
-				}
-				if (temp->next != null) {
-					temp->next->prev = temp->prev;
-				} else {
-					event->queue.tail = temp->prev;
-				}
-				temp->prev = null;
-				temp->next = null;
-				event->queue.size--;
-				temp->state = T_READY;
-				insertPriorityQueue(&(readyQueue), temp);
+				temp->prev->next = temp->next;
 			} else {
-				current = current->next;
+				event->queue.head = temp->next;
 			}
+			if (temp->next != null) {
+				temp->next->prev = temp->prev;
+			} else {
+				event->queue.tail = temp->prev;
+			}
+			temp->prev = null;
+			temp->next = null;
+			event->queue.size--;
+			temp->state = T_READY;
+			insertPriorityQueue(&(readyQueue), temp);
+			current = current->next;
 		} else {
-			exit(EVENT_SET_ERROR);
+			current = current->next;
 		}
 	}
 	YKExitMutex();
@@ -101,7 +99,7 @@ void YKEventSet(YKEVENT* event, unsigned eventMask) {
 
 }
 
-void YKEVentReset(YKEVENT* event, unsigned eventMask) {
+void YKEventReset(YKEVENT* event, unsigned eventMask) {
 
 	event->mask = event->mask & (~eventMask);
 	return;

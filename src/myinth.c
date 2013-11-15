@@ -1,11 +1,12 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
 #include "../include/DelayQueue.h"
+#include "../include/lab7defs.h"
 
 extern unsigned int YKTickCounter;
-extern int GlobalFlag;
-extern struct msg MsgArray[];
-extern YKQ* MsgQPtr;
+extern char KeyBuffer;
+extern YKEVENT* charEvent;
+extern YKEVENT* numEvent;
 
 void resetHandler() {
 	exit(0);
@@ -13,27 +14,47 @@ void resetHandler() {
 
 void tickHandler() {
 
-	static int next = 0;
-	static int data = 0;
+	unsigned int localCounter;
 
 	tickClock();
 	YKEnterMutex();
-	YKTickCounter++;
+	localCounter = ++YKTickCounter;
 	YKExitMutex();
 
-	MsgArray[next].tick = YKTickCounter;
-	data = (data + 89) % 100;
-	MsgArray[next].data = data;
-	if (YKQPost(MsgQPtr, (void*) &(MsgArray[next])) == 0)
-		printString("  TickISR: queue overflow! \n");
-	else if (++next >= MSGARRAYSIZE)
-		next = 0;
+	printString("\nTick: ");
+	printInt(localCounter);
+	printNewLine();
 
 }
 
 void keyboardHandler() {
 
+	char c;
 	YKEnterMutex();
-	GlobalFlag = 1;
+	c = KeyBuffer;
 	YKExitMutex();
+
+	switch (c) {
+
+		case 'a' : 	YKEventSet(charEvent, EVENT_A_KEY);
+				 	break;
+		case 'b' : 	YKEventSet(charEvent, EVENT_B_KEY);
+				 	break;
+		case 'c' : 	YKEventSet(charEvent, EVENT_C_KEY);
+				 	break;
+		case 'd' : 	YKEventSet(charEvent, EVENT_A_KEY |
+										  EVENT_B_KEY |
+										  EVENT_C_KEY);
+				 	break;
+		case '1' : 	YKEventSet(numEvent, EVENT_1_KEY);
+				 	break;
+		case '2' : 	YKEventSet(numEvent, EVENT_2_KEY);
+				 	break;
+		case '3' : 	YKEventSet(numEvent, EVENT_3_KEY);
+				 	break;
+		default  :	printString("\nKEYPRESS (");
+					printChar(c);
+					printString(") IGNORED\n");
+	}
+
 }
