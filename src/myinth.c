@@ -1,18 +1,21 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"
-#include "../include/DelayQueue.h"
-#include "../include/lab7defs.h"
+#include "../include/yaku.h"
 
 extern unsigned int YKTickCounter;
-extern char KeyBuffer;
-extern YKEVENT* charEvent;
-extern YKEVENT* numEvent;
+extern unsigned int NewPieceType;
+extern unsigned int NewPieceOrientation;
+extern unsigned int NewPieceID;
+extern unsigned int NewPieceColumn;
+extern YKQ* PiecesQ;
+extern Piece* PiecesArray;
 
-void resetHandler() {
+
+void resetHandler(void) {
 	exit(0);
 }
 
-void tickHandler() {
+void tickHandler(void) {
 
 	unsigned int localCounter;
 
@@ -27,34 +30,19 @@ void tickHandler() {
 
 }
 
-void keyboardHandler() {
+void newPieceHandler(void) {
+	static int nextPiece;
 
-	char c;
-	YKEnterMutex();
-	c = KeyBuffer;
-	YKExitMutex();
-
-	switch (c) {
-
-		case 'a' : 	YKEventSet(charEvent, EVENT_A_KEY);
-				 	break;
-		case 'b' : 	YKEventSet(charEvent, EVENT_B_KEY);
-				 	break;
-		case 'c' : 	YKEventSet(charEvent, EVENT_C_KEY);
-				 	break;
-		case 'd' : 	YKEventSet(charEvent, EVENT_A_KEY |
-										  EVENT_B_KEY |
-										  EVENT_C_KEY);
-				 	break;
-		case '1' : 	YKEventSet(numEvent, EVENT_1_KEY);
-				 	break;
-		case '2' : 	YKEventSet(numEvent, EVENT_2_KEY);
-				 	break;
-		case '3' : 	YKEventSet(numEvent, EVENT_3_KEY);
-				 	break;
-		default  :	printString("\nKEYPRESS (");
-					printChar(c);
-					printString(") IGNORED\n");
+	if (nextPiece >= MAX_PIECES) {
+		nextPiece = 0;
 	}
 
+	PiecesArray[nextPiece].type = NewPieceType;
+	PiecesArray[nextPiece].orientation = NewPieceOrientation;
+	PiecesArray[nextPiece].id = NewPieceID;
+	PiecesArray[nextPiece].column = NewPieceColumn;
+
+	YKQPost(PiecesQ, (void*) &PiecesArray[nextPiece]);
+	nextPiece++;
+	
 }

@@ -14,11 +14,11 @@ InterruptVectorTable:
         dd      RESET 		; Reset     ; Int 08h (IRQ 0)
         dd      TICK 		; Tick      ; Int 09h (IRQ 1)
         dd      KEYBOARD 	; Keyboard  ; Int 0Ah (IRQ 2)
-        dd      0 ; Simptris Game Over  ; Int 0Bh (IRQ 3)
-        dd      0 ; Simptris New Piece  ; Int 0Ch (IRQ 4)
-        dd      0 ; Simptris Received   ; Int 0Dh (IRQ 5)
-        dd      0 ; Simptris Touchdown  ; Int 0Eh (IRQ 6)
-        dd      0 ; Simptris Clear      ; Int 0Fh (IRQ 7)
+        dd      GAMEOVER 	; Game Over ; Int 0Bh (IRQ 3)
+        dd      NEWPIECE    ; New Piece ; Int 0Ch (IRQ 4)
+        dd      RECIEVED    ; Received  ; Int 0Dh (IRQ 5)
+        dd      TOUCHDOWN   ; Touchdown ; Int 0Eh (IRQ 6)
+        dd      CLEAR       ; Clear     ; Int 0Fh (IRQ 7)
         ; Software Interrupts:
         dd      0 ; Reserved (PC BIOS)  ; Int 10h
         dd      0                       ; Int 11h

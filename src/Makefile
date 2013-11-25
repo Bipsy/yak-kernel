@@ -2,7 +2,7 @@ lab7.bin:	lab7.s
 			nasm lab7.s -o lab7.bin -l lab7.lst
 
 lab7.s:		clib.s myinth.s yakc.s PriorityQueue.s DelayQueue.s Semaphore.s MessageQueue.s Event.s lab7app.s
-			cat clib.s myisr.s myinth.s yaks.s yakc.s PriorityQueue.s DelayQueue.s Semaphore.s MessageQueue.s Event.s lab7app.s > lab7.s
+			cat clib.s simptris.s myisr.s myinth.s yaks.s yakc.s PriorityQueue.s DelayQueue.s Semaphore.s MessageQueue.s Event.s lab7app.s > lab7.s
 
 myinth.s:		myinth.c
 			cpp myinth.c myinth.i
@@ -37,4 +37,4 @@ yakc.s:		yakc.c
 			c86 -g yakc.i yakc.s
 
 clean:		
-			rm lab7.bin lab7.lst lab7.s myinth.s myinth.i DelayQueue.s DelayQueue.i yakc.s yakc.i PriorityQueue.i PriorityQueue.s Semaphore.i Semaphore.s MessageQueue.i Event.i MessageQueue.s Event.s lab7app.i lab7app.s
+			rm lab7.bin lab7.lst lab7.s myinth.s myinth.i DelayQueue.s DelayQueue.i yakc.s yakc.i PriorityQueue.i PriorityQueue.s Semaphore.i Semaphore.s MessageQueue.i Event.i MessageQueue.s Event.s lab7app.i lab7app.s *~

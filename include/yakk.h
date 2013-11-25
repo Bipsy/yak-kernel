@@ -83,6 +83,19 @@ typedef struct EventBlock {
 	unsigned int newFreeEvent;
 } EventBlock;
 
+typedef struct Piece {
+	unsigned int type;
+	unsigned int orientation;
+	unsigned int id;
+	unsigned int column;
+} Piece;
+
+typedef struct Move {
+	unsigned int id;
+	unsigned int id;
+	unsigned int slide;
+} Move;
+
 //Kernel API
 void YKInitialize(void);
 void YKEnterMutex(void);
