@@ -16,7 +16,7 @@ InterruptVectorTable:
         dd      KEYBOARD 	; Keyboard  ; Int 0Ah (IRQ 2)
         dd      GAMEOVER 	; Game Over ; Int 0Bh (IRQ 3)
         dd      NEWPIECE    ; New Piece ; Int 0Ch (IRQ 4)
-        dd      RECIEVED    ; Received  ; Int 0Dh (IRQ 5)
+        dd      RECEIVED    ; Received  ; Int 0Dh (IRQ 5)
         dd      TOUCHDOWN   ; Touchdown ; Int 0Eh (IRQ 6)
         dd      CLEAR       ; Clear     ; Int 0Fh (IRQ 7)
         ; Software Interrupts:

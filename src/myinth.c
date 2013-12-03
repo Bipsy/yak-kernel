@@ -10,6 +10,7 @@ extern unsigned NewPieceOrientation;
 extern unsigned NewPieceColumn;
 extern YKQ* PiecesQPtr;
 extern YKSEM* CommSem;
+extern Piece* PiecesArray;
 
 
 void resetHandler(void) {
@@ -37,7 +38,7 @@ void keyboardHandler(void) {
 
 }
 
-void gameOverhandler(void) {
+void gameOverHandler(void) {
 
 	exit(GAME_OVER);
 
@@ -52,10 +53,10 @@ void newPieceHandler(void) {
 	static unsigned int nextPiece;
 
 	//Build new piece
-	pieceArray[nextPiece].id = NewPieceID;
-	pieceArray[nextPiece].type = NewPieceType;
-	pieceArray[nextPiece].orientation = NewPieceOrientation;
-	pieceArray[nextPiece].column = column;
+	PiecesArray[nextPiece].id = NewPieceID;
+	PiecesArray[nextPiece].type = NewPieceType;
+	PiecesArray[nextPiece].orientation = NewPieceOrientation;
+	PiecesArray[nextPiece].column = NewPieceColumn;
 	if (nextPiece+1 < MSGQSIZE) {	
 		nextPiece++;
 	} else {
@@ -63,7 +64,7 @@ void newPieceHandler(void) {
 	}
 
 	//Place it on piece queue
-	YKPost(PiecesQPtr, &pieceArray[nextPiece-1];
+	YKQPost(PiecesQPtr, &PiecesArray[nextPiece-1]);
 	return;	
 
 }

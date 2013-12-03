@@ -2,19 +2,8 @@
 #include "../include/yakk.h"                   /* contains kernel definitions */
 #include "../include/yaku.h"
 
-#define TASK_STACK_SIZE   512       /* stack size in words */
-#define MSGQSIZE          20
-#define SLIDE				0
-#define ROTATE				1
-#define CORNER				0
-#define COUNTER-CLOCKWISE	0
-#define CLOCKWISE			1
-#define RIGHT				1
-#define LEFT				0
-
 Piece PiecesArray[MAX_PIECES];  /* buffers for message content */
 Move MovesArray[MAX_MOVES];
-
 
 int MovesTaskStk[TASK_STACK_SIZE];      /* a stack for each task */
 int CommTaskStk[TASK_STACK_SIZE];
