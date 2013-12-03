@@ -14,8 +14,8 @@ TICK:
 		push 	ds
 		push 	es
 		push 	bp
-		call		YKGetISRCallDepth
-		test		ax, ax
+		call	YKGetISRCallDepth
+		test	ax, ax
 		jnz		tick_1
 		mov		si, [currentTask]
 		add		si, word 0x4
@@ -48,16 +48,86 @@ tick_1:
 KEYBOARD:
 
 		push 	ax
+		push 	bx
+		push 	cx
+		push 	dx
+		push 	di
+		push 	si
+		push 	ds
+		push 	es
+		push 	bp
+		call	YKGetISRCallDepth
+		test	ax, ax
+		jnz		keyboard_1
+		mov		si, [currentTask]
+		add		si, word 0x4
+		mov 		[si], sp	
+
+keyboard_1:		
+		call	YKEnterISR
+		
+		sti						;enabling interrupts
+		call	keyboardHandler ;calling C interrupt handler
+		cli						;disabling interrupts
+
 		mov     al, 0x20		;Load nonspecific EOI value (0x20) into register al
 		out		0x20, al		;Write EOI to PIC (port 0x20)
+
+		call	YKExitISR
+
+		pop		bp
+		pop		es
+		pop		ds
+		pop		si
+		pop		di
+		pop		dx
+		pop		cx
+		pop		bx
 		pop		ax
+
 		iret					;returning from ISR
 
 GAMEOVER:
-	
-		mov		ax, word 0x0
-		push	ax
-		call	exit
+
+		push 	ax
+		push 	bx
+		push 	cx
+		push 	dx
+		push 	di
+		push 	si
+		push 	ds
+		push 	es
+		push 	bp
+		call	YKGetISRCallDepth
+		test	ax, ax
+		jnz		gameover_1
+		mov		si, [currentTask]
+		add		si, word 0x4
+		mov 		[si], sp	
+
+gameover_1:		
+		call	YKEnterISR
+		
+		sti						;enabling interrupts
+		call	gameOverHandler ;calling C interrupt handler
+		cli						;disabling interrupts
+
+		mov     al, 0x20		;Load nonspecific EOI value (0x20) into register al
+		out		0x20, al		;Write EOI to PIC (port 0x20)
+
+		call	YKExitISR
+
+		pop		bp
+		pop		es
+		pop		ds
+		pop		si
+		pop		di
+		pop		dx
+		pop		cx
+		pop		bx
+		pop		ax
+
+		iret					;returning from ISR
 
 NEWPIECE:
 
@@ -101,7 +171,7 @@ newpiece_1:
 
 		iret					;returning from ISR
 
-RECIEVED:
+RECEIVED:
 
 		push 	ax
 		push 	bx
@@ -114,12 +184,12 @@ RECIEVED:
 		push 	bp
 		call	YKGetISRCallDepth
 		test	ax, ax
-		jnz		recieved_1
+		jnz		received_1
 		mov		si, [currentTask]
 		add		si, word 0x4
 		mov 		[si], sp	
 
-recieved_1:		
+received_1:		
 		call	YKEnterISR
 		
 		sti						;enabling interrupts
@@ -207,7 +277,7 @@ clear_1:
 		call	YKEnterISR
 		
 		sti						;enabling interrupts
-		call	clearHandler	;calling C interrupt handler
+		call	clearHandler    ;calling C interrupt handler
 		cli						;disabling interrupts
 
 		mov     al, 0x20		;Load nonspecific EOI value (0x20) into register al
@@ -225,7 +295,7 @@ clear_1:
 		pop		bx
 		pop		ax
 
-		iret					;returning from ISR 
+		iret					;returning from ISR
 
 TRAP:
 

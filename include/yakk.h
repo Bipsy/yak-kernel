@@ -14,6 +14,7 @@
 #define NEW_EVENT_FAILED 5
 #define EVENT_PEND_ERROR 6
 #define EVENT_SET_ERROR 7
+#define GAME_OVER 8
 
 //Event Codes
 #define EVENT_WAIT_ANY 0
@@ -84,17 +85,18 @@ typedef struct EventBlock {
 } EventBlock;
 
 typedef struct Piece {
+	unsigned int id;
 	unsigned int type;
 	unsigned int orientation;
-	unsigned int id;
 	unsigned int column;
 } Piece;
 
 typedef struct Move {
 	unsigned int id;
-	unsigned int id;
-	unsigned int slide;
-} Move;
+	unsigned int direction;
+	unsigned int function;
+	unsigned int times;
+}
 
 //Kernel API
 void YKInitialize(void);
