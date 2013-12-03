@@ -53,10 +53,12 @@ void newPieceHandler(void) {
 	static unsigned int nextPiece;
 
 	//Build new piece
+	YKEnterMutex();
 	PiecesArray[nextPiece].id = NewPieceID;
 	PiecesArray[nextPiece].type = NewPieceType;
 	PiecesArray[nextPiece].orientation = NewPieceOrientation;
 	PiecesArray[nextPiece].column = NewPieceColumn;
+	YKExitMutex();
 	if (nextPiece+1 < MSGQSIZE) {	
 		nextPiece++;
 	} else {

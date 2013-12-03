@@ -39,12 +39,15 @@ void MovesTask(void) {
 
 	while(1) {
 		newPiece = (Piece*) YKQPend(PiecesQPtr);
+		printString("Got Piece\n");
+		column = newPiece->column;
 		//Corner Piece		
 		if (newPiece->type == CORNER) {
 			//Move piece to column 4
 
+			printString("I am a corner\n");
 			//Move left			
-			if (newPiece->column > 4) {
+			if (column > 4) {
 				MovesArray[nextMove].direction = LEFT;
 				MovesArray[nextMove].times = 1;
 			//Move right
@@ -64,6 +67,7 @@ void MovesTask(void) {
 
 			//Bottom is curved
 			if (curved) {
+				printString("Bottom is curved\n");
 				switch (newPiece->orientation) {
 					// *
 					// * *
@@ -108,13 +112,14 @@ void MovesTask(void) {
 							break;
 					// * *
 					// *
-					//Rotate counter-clockwise two turns
-					//Move right one space
-					case 4:	 break;
+					//No moves
+					case 3:	 break;
 					default: break;
 				}
+			curved = 0;
 			//Bottom is flat
 			} else {
+				printString("Bottom is flat\n");
 				switch (newPiece->orientation) {
 					// *
 					// * *
@@ -184,7 +189,8 @@ void MovesTask(void) {
 					// *
 					//Rotate counter-clockwise two turns
 					//Move right one space
-					case 4: MovesArray[nextMove].id = newPiece->id;
+					case 3: breakpoint();
+							MovesArray[nextMove].id = newPiece->id;
 							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
 							MovesArray[nextMove].function = ROTATE;
 							MovesArray[nextMove].times = 2;
@@ -207,20 +213,19 @@ void MovesTask(void) {
 							break;
 					default: break;
 				}
+			curved = 1;
 			}
 
 		//Straight Piece
 		} else {
 			column = newPiece->column;
+			printString("I am a line\n");
+			printInt(column);
+			printNewLine();
 			//Move Left			
 			if (column > 0) {
 				MovesArray[nextMove].direction = LEFT;
 				MovesArray[nextMove].times = (column - 1);
-				if (nextMove+1 < MSGQSIZE) {
-					nextMove++;
-				} else {
-					nextMove = 0;				
-				}
 			//Move Right
 			} else {
 				MovesArray[nextMove].direction = RIGHT;
@@ -267,6 +272,8 @@ void CommTask(void) {
 	while(1) {
 
 		newMove = (Move*) YKQPend(CommQPtr);
+		printString("Got Move\n");
+		breakpoint();
 		for (i = 0; i < newMove->times; i++) {
 			YKSemPend(CommSem);
 			if (newMove->function == SLIDE) {
@@ -292,7 +299,7 @@ void STask(void) {
     max = YKIdleCount / 25;
     YKIdleCount = 0;
 
-    YKNewTask(MovesTask, (void *) &MovesTaskStk[TASK_STACK_SIZE], 3);
+    YKNewTask(MovesTask, (void *) &MovesTaskStk[TASK_STACK_SIZE], 1);
     YKNewTask(CommTask, (void *) &CommTaskStk[TASK_STACK_SIZE], 2);
 	StartSimptris();
     
@@ -326,7 +333,7 @@ void main(void) {
     PiecesQPtr = YKQCreate(PiecesQ, MSGQSIZE);
 	CommQPtr = YKQCreate(CommQ, MSGQSIZE);
 	CommSem = YKSemCreate(1);
-    YKNewTask(STask, (void *) &STaskStk[TASK_STACK_SIZE], 1);
+    YKNewTask(STask, (void *) &STaskStk[TASK_STACK_SIZE], 3);
     
 	SeedSimptris(1247);
 

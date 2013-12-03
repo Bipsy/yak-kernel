@@ -195,4 +195,8 @@ void YKTickHandler(void) {
 
 }
 
+void breakpoint() {
+	return;
+}
+
 

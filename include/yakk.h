@@ -137,5 +137,6 @@ YKSEM* getNewSem(void);
 YKQ* getNewQueue(void);
 YKEVENT* getNewEvent(void);
 void YKRun(void);
+void breakpoint();
 
 #endif
