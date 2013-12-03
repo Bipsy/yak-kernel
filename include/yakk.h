@@ -21,12 +21,12 @@
 #define EVENT_WAIT_ALL 1
 
 //Simptris Goodies
-#define TASK_STACK_SIZE   512       /* stack size in words */
-#define MSGQSIZE          20
+#define TASK_STACK_SIZE   	512       /* stack size in words */
+#define MSGQSIZE          	20
 #define SLIDE				0
 #define ROTATE				1
 #define CORNER				0
-#define COUNTER-CLOCKWISE	0
+#define COUNTERCLOCKWISE	0
 #define CLOCKWISE			1
 #define RIGHT				1
 #define LEFT				0

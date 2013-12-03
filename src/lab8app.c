@@ -1,6 +1,7 @@
 #include "../include/clib.h"
 #include "../include/yakk.h"                   /* contains kernel definitions */
 #include "../include/yaku.h"
+#include "../include/simptris.h"
 
 Piece PiecesArray[MAX_PIECES];  /* buffers for message content */
 Move MovesArray[MAX_MOVES];
@@ -10,7 +11,7 @@ int CommTaskStk[TASK_STACK_SIZE];
 int STaskStk[TASK_STACK_SIZE];
 
 extern unsigned int YKCtxSwCount;
-extern unsigned int YKIdleCount;COUNTER-CLOCKWISE
+extern unsigned int YKIdleCount;
 extern unsigned int YKTickCounter;
 extern unsigned int NewPieceType;
 extern unsigned int NewPieceOrientation;
@@ -37,24 +38,24 @@ void MovesTask(void) {
 	unsigned int i;
 
 	while(1) {
-		newPiece = (Piece*) YKQPend(PiecesQ);
+		newPiece = (Piece*) YKQPend(PiecesQPtr);
 		//Corner Piece		
 		if (newPiece->type == CORNER) {
 			//Move piece to column 4
 
 			//Move left			
 			if (newPiece->column > 4) {
-				movesArray[nextMove].direction = LEFT;
-				movesArray[nextMove].times = 1;
+				MovesArray[nextMove].direction = LEFT;
+				MovesArray[nextMove].times = 1;
 			//Move right
 			} else {
-				movesArray[nextMove].direction = RIGHT;
-				movesArray[nextMove].times = 4 - column;
+				MovesArray[nextMove].direction = RIGHT;
+				MovesArray[nextMove].times = 4 - column;
 			}
 			
-			movesArray[nextMove].id = newPiece->id;
-			movesArray[nextMove].function = SLIDE;
-			YKQPost(CommPtr, &movesArray[nextMove];
+			MovesArray[nextMove].id = newPiece->id;
+			MovesArray[nextMove].function = SLIDE;
+			YKQPost(CommQPtr, &MovesArray[nextMove]);
 			if (nextMove+1 < MSGQSIZE) {
 				nextMove++;
 			} else {
@@ -67,24 +68,24 @@ void MovesTask(void) {
 					// *
 					// * *
 					//Rotate clockwise one turn
-					case 0: movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = CLOCKWISE;
-							movesArray[nextMove].function = ROTATE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+					case 0: MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = CLOCKWISE;
+							MovesArray[nextMove].function = ROTATE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
-							else {
+							} else {
 								nextMove = 0;				
 							}
 					//   *
 					// * *
 					//Rotate counter-clockwise two turns
-					case 1: movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = COUNTER-CLOCKWISE;
-							movesArray[nextMove].function = ROTATE;
-							movesArray[nextMove].times = 2;
-							YKQPost(CommPtr, &movesArray[nextMove];
+					case 1: MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+							MovesArray[nextMove].function = ROTATE;
+							MovesArray[nextMove].times = 2;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
 							} else {
@@ -94,14 +95,14 @@ void MovesTask(void) {
 					// * *
 					//   *
 					//Rotate counter-clockwise one turn
-					case 2: movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = COUNTER-CLOCKWISE;
-							movesArray[nextMove].function = ROTATE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+					case 2: MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+							MovesArray[nextMove].function = ROTATE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
-							else {
+							} else {
 								nextMove = 0;				
 							}
 							break;
@@ -119,21 +120,21 @@ void MovesTask(void) {
 					// * *
 					//Rotate counter-clockwise one turn
 					//Move right one space
-					case 0: movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = COUNTER-CLOCKWISE;
-							movesArray[nextMove].function = ROTATE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+					case 0: MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+							MovesArray[nextMove].function = ROTATE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
-							else {
+							} else {
 								nextMove = 0;				
 							}
-							movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = RIGHT;
-							movesArray[nextMove].function = SLIDE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+							MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = RIGHT;
+							MovesArray[nextMove].function = SLIDE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
 							} else {
@@ -143,11 +144,11 @@ void MovesTask(void) {
 					//   *
 					// * *
 					//Move right one space					
-					case 1: movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = RIGHT;
-							movesArray[nextMove].function = SLIDE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+					case 1: MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = RIGHT;
+							MovesArray[nextMove].function = SLIDE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
 							} else {
@@ -158,21 +159,21 @@ void MovesTask(void) {
 					//   *
 					//Rotate clockwise one turn
 					//Move right one space
-					case 2: movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = CLOCKWISE;
-							movesArray[nextMove].function = ROTATE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+					case 2: MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = CLOCKWISE;
+							MovesArray[nextMove].function = ROTATE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
-							else {
+							} else {
 								nextMove = 0;				
 							}
-							movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = RIGHT;
-							movesArray[nextMove].function = SLIDE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+							MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = RIGHT;
+							MovesArray[nextMove].function = SLIDE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
 							} else {
@@ -183,21 +184,21 @@ void MovesTask(void) {
 					// *
 					//Rotate counter-clockwise two turns
 					//Move right one space
-					case 4: movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = COUNTER-CLOCKWISE;
-							movesArray[nextMove].function = ROTATE;
-							movesArray[nextMove].times = 2;
-							YKQPost(CommPtr, &movesArray[nextMove];
+					case 4: MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+							MovesArray[nextMove].function = ROTATE;
+							MovesArray[nextMove].times = 2;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
-							else {
+							} else {
 								nextMove = 0;				
 							}
-							movesArray[nextMove].id = newPiece->id;
-							movesArray[nextMove].direction = RIGHT;
-							movesArray[nextMove].function = SLIDE;
-							movesArray[nextMove].times = 1;
-							YKQPost(CommPtr, &movesArray[nextMove];
+							MovesArray[nextMove].id = newPiece->id;
+							MovesArray[nextMove].direction = RIGHT;
+							MovesArray[nextMove].function = SLIDE;
+							MovesArray[nextMove].times = 1;
+							YKQPost(CommQPtr, &MovesArray[nextMove]);
 							if (nextMove+1 < MSGQSIZE) {
 								nextMove++;
 							} else {
@@ -213,34 +214,34 @@ void MovesTask(void) {
 			column = newPiece->column;
 			//Move Left			
 			if (column > 0) {
-				movesArray[nextMove].direction = LEFT;
-				movesArray[nextMove].times = (column - 1);
+				MovesArray[nextMove].direction = LEFT;
+				MovesArray[nextMove].times = (column - 1);
 				if (nextMove+1 < MSGQSIZE) {
 					nextMove++;
-				else {
+				} else {
 					nextMove = 0;				
 				}
 			//Move Right
 			} else {
-				movesArray[nextMove].direction = RIGHT;
-				movesArray[nextMove].times = 1;
+				MovesArray[nextMove].direction = RIGHT;
+				MovesArray[nextMove].times = 1;
 			}
-			movesArray[nextMove].id = newPiece->id;  
-			movesArray[nextMove].function = SLIDE;
-			YKQPost(CommQPtr, &movesArray[nextMove];
+			MovesArray[nextMove].id = newPiece->id;  
+			MovesArray[nextMove].function = SLIDE;
+			YKQPost(CommQPtr, &MovesArray[nextMove]);
 			if (nextMove+1 < MSGQSIZE) {
 				nextMove++;
-			else {
+			} else {
 				nextMove = 0;				
 			}
 			
 			//Lay the piece flat
 			if (newPiece->orientation == 1) {
-				movesArray[nextMove].id = newPiece->id;
-				movesArray[nextMove].direction = 1;
-				movesArray[nextMove].function = ROTATE;
-				movesArray[nextMove].times = 1;
-				YKQPost(CommQPtr, &movesArray[nextMove];
+				MovesArray[nextMove].id = newPiece->id;
+				MovesArray[nextMove].direction = CLOCKWISE;
+				MovesArray[nextMove].function = ROTATE;
+				MovesArray[nextMove].times = 1;
+				YKQPost(CommQPtr, &MovesArray[nextMove]);
 
 				if (nextMove+1 < MSGQSIZE) {
 					nextMove++;
