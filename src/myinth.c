@@ -10,7 +10,7 @@ extern unsigned NewPieceOrientation;
 extern unsigned NewPieceColumn;
 extern YKQ* PiecesQPtr;
 extern YKSEM* CommSem;
-extern Piece* PiecesArray;
+extern Piece PiecesArray[];
 
 
 void resetHandler(void) {

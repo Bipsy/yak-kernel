@@ -30,6 +30,8 @@
 #define CLOCKWISE			1
 #define RIGHT				1
 #define LEFT				0
+#define HORIZONTAL			0
+#define VERTICAL			1
 
 //Kernel Data Structures
 

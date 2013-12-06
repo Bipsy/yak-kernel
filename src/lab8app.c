@@ -34,6 +34,7 @@ void MovesTask(void) {
 	Piece* newPiece;
 	static unsigned int nextMove;
 	static unsigned int curved;
+	static unsigned int straightCount;
 	unsigned int column;
 	unsigned int i;
 
@@ -68,6 +69,7 @@ void MovesTask(void) {
 			//Bottom is curved
 			if (curved) {
 				printString("Bottom is curved\n");
+				printInt(newPiece->orientation);
 				switch (newPiece->orientation) {
 					// *
 					// * *
@@ -82,6 +84,7 @@ void MovesTask(void) {
 							} else {
 								nextMove = 0;				
 							}
+							break;
 					//   *
 					// * *
 					//Rotate counter-clockwise two turns
@@ -218,43 +221,77 @@ void MovesTask(void) {
 
 		//Straight Piece
 		} else {
-			column = newPiece->column;
-			printString("I am a line\n");
-			printInt(column);
-			printNewLine();
-			//Move Left			
-			if (column > 0) {
-				MovesArray[nextMove].direction = LEFT;
-				MovesArray[nextMove].times = (column - 1);
-			//Move Right
-			} else {
-				MovesArray[nextMove].direction = RIGHT;
-				MovesArray[nextMove].times = 1;
-			}
-			MovesArray[nextMove].id = newPiece->id;  
-			MovesArray[nextMove].function = SLIDE;
-			YKQPost(CommQPtr, &MovesArray[nextMove]);
-			if (nextMove+1 < MSGQSIZE) {
-				nextMove++;
-			} else {
-				nextMove = 0;				
-			}
-			
-			//Lay the piece flat
-			if (newPiece->orientation == 1) {
-				MovesArray[nextMove].id = newPiece->id;
-				MovesArray[nextMove].direction = CLOCKWISE;
-				MovesArray[nextMove].function = ROTATE;
-				MovesArray[nextMove].times = 1;
+			if (straightCount % 4 == 0) {
+				column = newPiece->column;				
+				if (column >= 3) {
+					MovesArray[nextMove].direction = LEFT;
+					MovesArray[nextMove].times = (column - 3);
+				//Move Right
+				} else {
+					MovesArray[nextMove].direction = RIGHT;
+					MovesArray[nextMove].times = 3 - column;
+				}
+				MovesArray[nextMove].id = newPiece->id;  
+				MovesArray[nextMove].function = SLIDE;
 				YKQPost(CommQPtr, &MovesArray[nextMove]);
-
 				if (nextMove+1 < MSGQSIZE) {
 					nextMove++;
 				} else {
-					nextMove = 0;
+					nextMove = 0;				
 				}
+
+				//Turn the piece vertical
+				if (newPiece->orientation == HORIZONTAL) {
+					MovesArray[nextMove].id = newPiece->id;
+					MovesArray[nextMove].direction = CLOCKWISE;
+					MovesArray[nextMove].function = ROTATE;
+					MovesArray[nextMove].times = 1;
+					YKQPost(CommQPtr, &MovesArray[nextMove]);
+					if (nextMove+1 < MSGQSIZE) {
+						nextMove++;
+					} else {	
+						nextMove = 0;
+					}
+				}	
+			} else {			
+				column = newPiece->column;
+				printString("I am a line\n");
+				printInt(column);	
+				printNewLine();
+				//Move Left			
+				if (column > 0) {
+					MovesArray[nextMove].direction = LEFT;
+					MovesArray[nextMove].times = (column - 1);
+				//Move Right
+				} else {
+					MovesArray[nextMove].direction = RIGHT;
+					MovesArray[nextMove].times = 1;
+				}
+				MovesArray[nextMove].id = newPiece->id;  
+				MovesArray[nextMove].function = SLIDE;
+				YKQPost(CommQPtr, &MovesArray[nextMove]);
+				if (nextMove+1 < MSGQSIZE) {
+					nextMove++;
+				} else {
+					nextMove = 0;				
+				}
+				
+				//Lay the piece flat
+				if (newPiece->orientation == VERTICAL) {
+					MovesArray[nextMove].id = newPiece->id;
+					MovesArray[nextMove].direction = CLOCKWISE;
+					MovesArray[nextMove].function = ROTATE;
+					MovesArray[nextMove].times = 1;
+					YKQPost(CommQPtr, &MovesArray[nextMove]);
+	
+					if (nextMove+1 < MSGQSIZE) {
+						nextMove++;
+					} else {	
+						nextMove = 0;
+					}
+				}			
 			}
-			 
+			straightCount++;
 		}
 		
 	}
@@ -299,8 +336,8 @@ void STask(void) {
     max = YKIdleCount / 25;
     YKIdleCount = 0;
 
-    YKNewTask(MovesTask, (void *) &MovesTaskStk[TASK_STACK_SIZE], 1);
-    YKNewTask(CommTask, (void *) &CommTaskStk[TASK_STACK_SIZE], 2);
+    YKNewTask(MovesTask, (void *) &MovesTaskStk[TASK_STACK_SIZE], 2);
+    YKNewTask(CommTask, (void *) &CommTaskStk[TASK_STACK_SIZE], 1);
 	StartSimptris();
     
     while (1)
@@ -335,7 +372,7 @@ void main(void) {
 	CommSem = YKSemCreate(1);
     YKNewTask(STask, (void *) &STaskStk[TASK_STACK_SIZE], 3);
     
-	SeedSimptris(1247);
+	SeedSimptris(0);
 
     YKRun();
 } 
