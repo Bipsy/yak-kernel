@@ -44,13 +44,13 @@ void gameOverHandler(void) {
 
 }
 
+static unsigned int nextPiece = 0;
+
 void newPieceHandler(void) {
 	/* 	This function needs to get the details of the new simptris piece and 
 		place a new piece on the piece queue. It obtains the next piece from 
 		the piece array using a static counter.
 	*/
-
-	static unsigned int nextPiece;
 
 	//Build new piece
 	YKEnterMutex();
@@ -67,6 +67,7 @@ void newPieceHandler(void) {
 	PiecesArray[nextPiece].orientation = NewPieceOrientation;
 	PiecesArray[nextPiece].column = NewPieceColumn;
 	YKExitMutex();
+	YKQPost(PiecesQPtr, &PiecesArray[nextPiece]);
 	if (nextPiece+1 < MSGQSIZE) {	
 		nextPiece++;
 	} else {
@@ -74,7 +75,7 @@ void newPieceHandler(void) {
 	}
 
 	//Place it on piece queue
-	YKQPost(PiecesQPtr, &PiecesArray[nextPiece-1]);
+
 	//printString("Posted to queue\n");
 	return;	
 

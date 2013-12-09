@@ -604,9 +604,129 @@ void MovesTask(void) {
 						}
 						break;
 			case 39:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 40:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 41:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 42:	MovesArray[nextMove].id = newPiece->id;
 						MovesArray[nextMove].direction = LEFT;
 						MovesArray[nextMove].function = SLIDE;
 						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 43:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 44:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 45:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 46:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 47:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 48:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 49:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
 						YKQPost(CommQPtr, &MovesArray[nextMove]);
 						if (nextMove+1 < MSGQSIZE) {
 							nextMove++;
