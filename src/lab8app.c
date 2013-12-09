@@ -39,14 +39,24 @@ void MovesTask(void) {
 	unsigned int i;
 
 	while(1) {
+		//printString("About to grab new piece\n");
 		newPiece = (Piece*) YKQPend(PiecesQPtr);
-		printString("Got Piece\n");
+		
+		/*printString("Got Piece\n");
+		printInt(newPiece->id);
+		printNewLine();
+		printInt(newPiece->type);
+		printNewLine();
+		printInt(newPiece->orientation);
+		printNewLine();
+		printInt(newPiece->column);
+		printNewLine();*/
 		column = newPiece->column;
-		//Corner Piece		
+		//Corner Piece
+		breakpoint();		
 		if (newPiece->type == CORNER) {
 			//Move piece to column 4
 
-			printString("I am a corner\n");
 			//Move left			
 			if (column > 4) {
 				MovesArray[nextMove].direction = LEFT;
@@ -68,8 +78,6 @@ void MovesTask(void) {
 
 			//Bottom is curved
 			if (curved) {
-				printString("Bottom is curved\n");
-				printInt(newPiece->orientation);
 				switch (newPiece->orientation) {
 					// *
 					// * *
@@ -122,7 +130,6 @@ void MovesTask(void) {
 			curved = 0;
 			//Bottom is flat
 			} else {
-				printString("Bottom is flat\n");
 				switch (newPiece->orientation) {
 					// *
 					// * *
@@ -192,8 +199,7 @@ void MovesTask(void) {
 					// *
 					//Rotate counter-clockwise two turns
 					//Move right one space
-					case 3: breakpoint();
-							MovesArray[nextMove].id = newPiece->id;
+					case 3: MovesArray[nextMove].id = newPiece->id;
 							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
 							MovesArray[nextMove].function = ROTATE;
 							MovesArray[nextMove].times = 2;
@@ -255,9 +261,6 @@ void MovesTask(void) {
 				}	
 			} else {			
 				column = newPiece->column;
-				printString("I am a line\n");
-				printInt(column);	
-				printNewLine();
 				//Move Left			
 				if (column > 0) {
 					MovesArray[nextMove].direction = LEFT;
@@ -309,8 +312,6 @@ void CommTask(void) {
 	while(1) {
 
 		newMove = (Move*) YKQPend(CommQPtr);
-		printString("Got Move\n");
-		breakpoint();
 		for (i = 0; i < newMove->times; i++) {
 			YKSemPend(CommSem);
 			if (newMove->function == SLIDE) {
@@ -372,7 +373,7 @@ void main(void) {
 	CommSem = YKSemCreate(1);
     YKNewTask(STask, (void *) &STaskStk[TASK_STACK_SIZE], 3);
     
-	SeedSimptris(0);
+	SeedSimptris(1);
 
     YKRun();
 } 

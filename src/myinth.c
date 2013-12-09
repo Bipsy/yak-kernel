@@ -54,6 +54,14 @@ void newPieceHandler(void) {
 
 	//Build new piece
 	YKEnterMutex();
+	//printString("NewPieceHandler\n");
+	/*printInt(NewPieceID);
+	printNewLine();
+	printInt(NewPieceType);
+	printNewLine();
+	printInt(NewPieceOrientation);
+	printNewLine();
+	printInt(NewPieceColumn);*/
 	PiecesArray[nextPiece].id = NewPieceID;
 	PiecesArray[nextPiece].type = NewPieceType;
 	PiecesArray[nextPiece].orientation = NewPieceOrientation;
@@ -67,6 +75,7 @@ void newPieceHandler(void) {
 
 	//Place it on piece queue
 	YKQPost(PiecesQPtr, &PiecesArray[nextPiece-1]);
+	//printString("Posted to queue\n");
 	return;	
 
 }
