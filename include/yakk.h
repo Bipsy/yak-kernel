@@ -22,7 +22,7 @@
 
 //Simptris Goodies
 #define TASK_STACK_SIZE   	512       /* stack size in words */
-#define MSGQSIZE          	40
+#define MSGQSIZE          	10
 #define SLIDE				0
 #define ROTATE				1
 #define CORNER				0
