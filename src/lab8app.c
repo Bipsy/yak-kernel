@@ -39,264 +39,585 @@ void MovesTask(void) {
 	unsigned int i;
 
 	while(1) {
-		//printString("About to grab new piece\n");
+
 		newPiece = (Piece*) YKQPend(PiecesQPtr);
-		
-		/*printString("Got Piece\n");
-		printInt(newPiece->id);
-		printNewLine();
-		printInt(newPiece->type);
-		printNewLine();
-		printInt(newPiece->orientation);
-		printNewLine();
-		printInt(newPiece->column);
-		printNewLine();*/
-		column = newPiece->column;
-		//Corner Piece
-		breakpoint();		
-		if (newPiece->type == CORNER) {
-			//Move piece to column 4
 
-			//Move left			
-			if (column > 4) {
-				MovesArray[nextMove].direction = LEFT;
-				MovesArray[nextMove].times = 1;
-			//Move right
-			} else {
-				MovesArray[nextMove].direction = RIGHT;
-				MovesArray[nextMove].times = 4 - column;
-			}
-			
-			MovesArray[nextMove].id = newPiece->id;
-			MovesArray[nextMove].function = SLIDE;
-			YKQPost(CommQPtr, &MovesArray[nextMove]);
-			if (nextMove+1 < MSGQSIZE) {
-				nextMove++;
-			} else {
-				nextMove = 0;
-			}
+		switch (newPiece->id) {
+			case 0: 	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 3;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
 
-			//Bottom is curved
-			if (curved) {
-				switch (newPiece->orientation) {
-					// *
-					// * *
-					//Rotate clockwise one turn
-					case 0: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = CLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							break;
-					//   *
-					// * *
-					//Rotate counter-clockwise two turns
-					case 1: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 2;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					// * *
-					//   *
-					//Rotate counter-clockwise one turn
-					case 2: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							break;
-					// * *
-					// *
-					//No moves
-					case 3:	 break;
-					default: break;
-				}
-			curved = 0;
-			//Bottom is flat
-			} else {
-				switch (newPiece->orientation) {
-					// *
-					// * *
-					//Rotate counter-clockwise one turn
-					//Move right one space
-					case 0: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					//   *
-					// * *
-					//Move right one space					
-					case 1: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					// * *
-					//   *
-					//Rotate clockwise one turn
-					//Move right one space
-					case 2: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = CLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					// * *
-					// *
-					//Rotate counter-clockwise two turns
-					//Move right one space
-					case 3: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 2;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					default: break;
-				}
-			curved = 1;
-			}
-
-		//Straight Piece
-		} else {
-			if (straightCount % 4 == 0) {
-				column = newPiece->column;				
-				if (column >= 3) {
-					MovesArray[nextMove].direction = LEFT;
-					MovesArray[nextMove].times = (column - 3);
-				//Move Right
-				} else {
-					MovesArray[nextMove].direction = RIGHT;
-					MovesArray[nextMove].times = 3 - column;
-				}
-				MovesArray[nextMove].id = newPiece->id;  
-				MovesArray[nextMove].function = SLIDE;
-				YKQPost(CommQPtr, &MovesArray[nextMove]);
-				if (nextMove+1 < MSGQSIZE) {
-					nextMove++;
-				} else {
-					nextMove = 0;				
-				}
-
-				//Turn the piece vertical
-				if (newPiece->orientation == HORIZONTAL) {
-					MovesArray[nextMove].id = newPiece->id;
-					MovesArray[nextMove].direction = CLOCKWISE;
-					MovesArray[nextMove].function = ROTATE;
-					MovesArray[nextMove].times = 1;
-					YKQPost(CommQPtr, &MovesArray[nextMove]);
-					if (nextMove+1 < MSGQSIZE) {
-						nextMove++;
-					} else {	
-						nextMove = 0;
-					}
-				}	
-			} else {			
-				column = newPiece->column;
-				//Move Left			
-				if (column > 0) {
-					MovesArray[nextMove].direction = LEFT;
-					MovesArray[nextMove].times = (column - 1);
-				//Move Right
-				} else {
-					MovesArray[nextMove].direction = RIGHT;
-					MovesArray[nextMove].times = 1;
-				}
-				MovesArray[nextMove].id = newPiece->id;  
-				MovesArray[nextMove].function = SLIDE;
-				YKQPost(CommQPtr, &MovesArray[nextMove]);
-				if (nextMove+1 < MSGQSIZE) {
-					nextMove++;
-				} else {
-					nextMove = 0;				
-				}
-				
-				//Lay the piece flat
-				if (newPiece->orientation == VERTICAL) {
-					MovesArray[nextMove].id = newPiece->id;
-					MovesArray[nextMove].direction = CLOCKWISE;
-					MovesArray[nextMove].function = ROTATE;
-					MovesArray[nextMove].times = 1;
-					YKQPost(CommQPtr, &MovesArray[nextMove]);
-	
-					if (nextMove+1 < MSGQSIZE) {
-						nextMove++;
-					} else {	
-						nextMove = 0;
-					}
-				}			
-			}
-			straightCount++;
+			case 1:		MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 2:		MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 3:		MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 4:		break;
+			case 5:		MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 6:		MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 3;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 7:		MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 8:		MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 9:		break;
+			case 10:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 11:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 12:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 13:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 3;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 14:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 15:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 16:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 17:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 18:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 19:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 3;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 20:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 21:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 22:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 23:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 24:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 3;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 25:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 26: 	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 27:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 3;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 28:	break;
+			case 29:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 30:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 31:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 32:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 33:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = COUNTERCLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 34:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 35:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 36:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 37:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = CLOCKWISE;
+						MovesArray[nextMove].function = ROTATE;
+						MovesArray[nextMove].times = 1;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = RIGHT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 2;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 38:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 3;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			case 39:	MovesArray[nextMove].id = newPiece->id;
+						MovesArray[nextMove].direction = LEFT;
+						MovesArray[nextMove].function = SLIDE;
+						MovesArray[nextMove].times = 4;
+						YKQPost(CommQPtr, &MovesArray[nextMove]);
+						if (nextMove+1 < MSGQSIZE) {
+							nextMove++;
+						} else {
+							nextMove = 0;
+						}
+						break;
+			default: 	break;
 		}
-		
+
+
 	}
 
 }
