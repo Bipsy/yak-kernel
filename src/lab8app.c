@@ -17,6 +17,12 @@ extern unsigned int NewPieceType;
 extern unsigned int NewPieceOrientation;
 extern unsigned int NewPieceID;
 extern unsigned int NewPieceColumn;
+extern unsigned int	ScreenBitMap0;
+extern unsigned int ScreenBitMap1;
+extern unsigned int ScreenBitMap2;
+extern unsigned int ScreenBitMap3;
+extern unsigned int ScreenBitMap4;
+extern unsigned int ScreenBitMap5;
 
 void* PiecesQ[MSGQSIZE];           /* space for message queue */
 YKQ* PiecesQPtr;                   /* actual name of queue */
@@ -24,6 +30,18 @@ void* CommQ[MSGQSIZE];
 YKQ* CommQPtr;
 YKSEM* CommSem;
 
+int handleMove(int id, int direction, int function, int times, int nextMove) {
+	MovesArray[nextMove].id = id;
+	MovesArray[nextMove].direction = direction;
+	MovesArray[nextMove].function = function;
+	MovesArray[nextMove].times = times;
+	YKQPost(CommQPtr, &MovesArray[nextMove]);
+	if (nextMove+1 < MSGQSIZE) {
+		return nextMove + 1;
+	} else {
+		return 0;
+	}
+}
 
 /*	This task should pull pieces off the pieces queue, make the decisions about 
 	what moves need to be performed, and place moves onto the move queue for the
@@ -35,270 +53,81 @@ void MovesTask(void) {
 	static unsigned int nextMove;
 	static unsigned int curved;
 	static unsigned int straightCount;
-	unsigned int column;
-	unsigned int i;
+	unsigned int row;
+	int value, direction, times;
 
 	while(1) {
-		//printString("About to grab new piece\n");
+
 		newPiece = (Piece*) YKQPend(PiecesQPtr);
-		
-		/*printString("Got Piece\n");
-		printInt(newPiece->id);
-		printNewLine();
-		printInt(newPiece->type);
-		printNewLine();
-		printInt(newPiece->orientation);
-		printNewLine();
-		printInt(newPiece->column);
-		printNewLine();*/
-		column = newPiece->column;
-		//Corner Piece
-		breakpoint();		
-		if (newPiece->type == CORNER) {
-			//Move piece to column 4
 
-			//Move left			
-			if (column > 4) {
-				MovesArray[nextMove].direction = LEFT;
-				MovesArray[nextMove].times = 1;
-			//Move right
-			} else {
-				MovesArray[nextMove].direction = RIGHT;
-				MovesArray[nextMove].times = 4 - column;
-			}
-			
-			MovesArray[nextMove].id = newPiece->id;
-			MovesArray[nextMove].function = SLIDE;
-			YKQPost(CommQPtr, &MovesArray[nextMove]);
-			if (nextMove+1 < MSGQSIZE) {
-				nextMove++;
-			} else {
-				nextMove = 0;
+		if (newPiece->type == STRAIGHT) {
+
+			if (newPiece->orientation == HORIZONTAL) {
+				nextMove = handleMove(newPiece->id, CLOCKWISE, ROTATE, 1, nextMove);
 			}
 
-			//Bottom is curved
-			if (curved) {
-				switch (newPiece->orientation) {
-					// *
-					// * *
-					//Rotate clockwise one turn
-					case 0: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = CLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							break;
-					//   *
-					// * *
-					//Rotate counter-clockwise two turns
-					case 1: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 2;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					// * *
-					//   *
-					//Rotate counter-clockwise one turn
-					case 2: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							break;
-					// * *
-					// *
-					//No moves
-					case 3:	 break;
-					default: break;
-				}
-			curved = 0;
-			//Bottom is flat
+			if (ScreenBitMap1 < ScreenBitMap0) {
+				direction = newPiece->column < 1 ? RIGHT : LEFT;
+				times = newPiece->column < 1 ? 1 : newPiece->column-1;
+				nextMove = handleMove(newPiece->id, direction, SLIDE, times, nextMove);
 			} else {
-				switch (newPiece->orientation) {
-					// *
-					// * *
-					//Rotate counter-clockwise one turn
-					//Move right one space
-					case 0: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					//   *
-					// * *
-					//Move right one space					
-					case 1: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					// * *
-					//   *
-					//Rotate clockwise one turn
-					//Move right one space
-					case 2: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = CLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					// * *
-					// *
-					//Rotate counter-clockwise two turns
-					//Move right one space
-					case 3: MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = COUNTERCLOCKWISE;
-							MovesArray[nextMove].function = ROTATE;
-							MovesArray[nextMove].times = 2;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;				
-							}
-							MovesArray[nextMove].id = newPiece->id;
-							MovesArray[nextMove].direction = RIGHT;
-							MovesArray[nextMove].function = SLIDE;
-							MovesArray[nextMove].times = 1;
-							YKQPost(CommQPtr, &MovesArray[nextMove]);
-							if (nextMove+1 < MSGQSIZE) {
-								nextMove++;
-							} else {
-								nextMove = 0;
-							}
-							break;
-					default: break;
-				}
-			curved = 1;
+				nextMove = handleMove(newPiece->id, LEFT, SLIDE, newPiece->column, nextMove);
 			}
 
-		//Straight Piece
 		} else {
-			if (straightCount % 4 == 0) {
-				column = newPiece->column;				
-				if (column >= 3) {
-					MovesArray[nextMove].direction = LEFT;
-					MovesArray[nextMove].times = (column - 3);
-				//Move Right
-				} else {
-					MovesArray[nextMove].direction = RIGHT;
-					MovesArray[nextMove].times = 3 - column;
-				}
-				MovesArray[nextMove].id = newPiece->id;  
-				MovesArray[nextMove].function = SLIDE;
-				YKQPost(CommQPtr, &MovesArray[nextMove]);
-				if (nextMove+1 < MSGQSIZE) {
-					nextMove++;
-				} else {
-					nextMove = 0;				
+			row = 0x8000;
+			while (row) {
+				if ((ScreenBitMap5 & row) == 0) {
+					if (1-((int)newPiece->orientation) > 0) {
+						nextMove = handleMove(newPiece->id, COUNTERCLOCKWISE, ROTATE, 1, nextMove);
+					} else if (1-((int)newPiece->orientation) < 0) {
+						nextMove = handleMove(newPiece->id, CLOCKWISE, ROTATE, 0-(1-newPiece->orientation), nextMove);
+					}
+					nextMove = handleMove(newPiece->id, RIGHT, SLIDE, 5-newPiece->column, nextMove);
+					break;
 				}
 
-				//Turn the piece vertical
-				if (newPiece->orientation == HORIZONTAL) {
-					MovesArray[nextMove].id = newPiece->id;
-					MovesArray[nextMove].direction = CLOCKWISE;
-					MovesArray[nextMove].function = ROTATE;
-					MovesArray[nextMove].times = 1;
-					YKQPost(CommQPtr, &MovesArray[nextMove]);
-					if (nextMove+1 < MSGQSIZE) {
-						nextMove++;
-					} else {	
-						nextMove = 0;
+				if ((ScreenBitMap4 & row) == 0) {
+					if (newPiece->orientation != 3) {
+						nextMove = handleMove(newPiece->id, COUNTERCLOCKWISE, ROTATE, 3-newPiece->orientation, nextMove);
 					}
-				}	
-			} else {			
-				column = newPiece->column;
-				//Move Left			
-				if (column > 0) {
-					MovesArray[nextMove].direction = LEFT;
-					MovesArray[nextMove].times = (column - 1);
-				//Move Right
-				} else {
-					MovesArray[nextMove].direction = RIGHT;
-					MovesArray[nextMove].times = 1;
-				}
-				MovesArray[nextMove].id = newPiece->id;  
-				MovesArray[nextMove].function = SLIDE;
-				YKQPost(CommQPtr, &MovesArray[nextMove]);
-				if (nextMove+1 < MSGQSIZE) {
-					nextMove++;
-				} else {
-					nextMove = 0;				
+					direction = (newPiece->column < 4) ? RIGHT : LEFT;
+					times = (newPiece->column < 4) ? 4-newPiece->column : newPiece->column-4;
+					nextMove = handleMove(newPiece->id, direction, SLIDE, times, nextMove);
+					break;
 				}
 				
-				//Lay the piece flat
-				if (newPiece->orientation == VERTICAL) {
-					MovesArray[nextMove].id = newPiece->id;
-					MovesArray[nextMove].direction = CLOCKWISE;
-					MovesArray[nextMove].function = ROTATE;
-					MovesArray[nextMove].times = 1;
-					YKQPost(CommQPtr, &MovesArray[nextMove]);
-	
-					if (nextMove+1 < MSGQSIZE) {
-						nextMove++;
-					} else {	
-						nextMove = 0;
+				if ((ScreenBitMap3 & row) == 0) {
+					if (newPiece->orientation == 0) {
+						nextMove = handleMove(newPiece->id, COUNTERCLOCKWISE, ROTATE, 1, nextMove);
+					} else if (newPiece->orientation != 1) {
+						nextMove = handleMove(newPiece->id, CLOCKWISE, ROTATE, 0-(1-newPiece->orientation), nextMove);
 					}
-				}			
-			}
-			straightCount++;
-		}
-		
-	}
+					direction = (newPiece->column < 3) ? RIGHT : LEFT;
+					times = (newPiece->column < 3) ? 3-newPiece->column : newPiece->column-3;
+					nextMove = handleMove(newPiece->id, direction, SLIDE, times, nextMove);
+					break;
+				}
 
+				if ((ScreenBitMap2 & row) == 0) {
+					if (newPiece->orientation != 3) {
+						if (newPiece->column != 5) {
+							nextMove = handleMove(newPiece->id, COUNTERCLOCKWISE, ROTATE, 3-newPiece->orientation, nextMove);
+						} else {
+							nextMove = handleMove(newPiece->id, CLOCKWISE, ROTATE, 3-newPiece->orientation, nextMove);
+						}
+					}
+					direction = (newPiece->column < 2) ? RIGHT : LEFT;
+					times = (newPiece->column < 2) ? 2-newPiece->column : newPiece->column-2;
+					nextMove = handleMove(newPiece->id, direction, SLIDE, times, nextMove);
+					break;
+				}
+
+				row = row >> 1;
+
+			}	
+		}
+	}
 }
 
 /*	This task pulls moves off the move queue and send commands to the simptris 
@@ -373,7 +202,7 @@ void main(void) {
 	CommSem = YKSemCreate(1);
     YKNewTask(STask, (void *) &STaskStk[TASK_STACK_SIZE], 3);
     
-	SeedSimptris(1);
+	SeedSimptris(2);
 
     YKRun();
 } 

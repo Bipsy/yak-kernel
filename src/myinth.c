@@ -51,6 +51,7 @@ void newPieceHandler(void) {
 	*/
 
 	static unsigned int nextPiece;
+	int temp;
 
 	//Build new piece
 	YKEnterMutex();
@@ -67,15 +68,13 @@ void newPieceHandler(void) {
 	PiecesArray[nextPiece].orientation = NewPieceOrientation;
 	PiecesArray[nextPiece].column = NewPieceColumn;
 	YKExitMutex();
+	YKQPost(PiecesQPtr, &PiecesArray[nextPiece]);
 	if (nextPiece+1 < MSGQSIZE) {	
 		nextPiece++;
 	} else {
 		nextPiece = 0;
 	}
 
-	//Place it on piece queue
-	YKQPost(PiecesQPtr, &PiecesArray[nextPiece-1]);
-	//printString("Posted to queue\n");
 	return;	
 
 }

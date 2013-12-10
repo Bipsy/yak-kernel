@@ -26,6 +26,7 @@
 #define SLIDE				0
 #define ROTATE				1
 #define CORNER				0
+#define STRAIGHT			1
 #define COUNTERCLOCKWISE	0
 #define CLOCKWISE			1
 #define RIGHT				1
