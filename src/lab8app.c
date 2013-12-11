@@ -54,6 +54,7 @@ void MovesTask(void) {
 	static unsigned int curved;
 	static unsigned int straightCount;
 	unsigned int row;
+	unsigned int column;
 	int value, direction, times;
 
 	while(1) {
@@ -76,6 +77,18 @@ void MovesTask(void) {
 
 		} else {
 			row = 0x8000;
+			column = newPiece->column;
+			
+			if (column == 5) {
+				nextMove = handleMove(newPiece->id, LEFT, SLIDE, 1, nextMove);
+				column--;
+			}
+
+			if (column == 0) {
+				nextMove = handleMove(newPiece->id, RIGHT, SLIDE, 1, nextMove);
+				column++;
+			}
+
 			while (row) {
 				if ((ScreenBitMap5 & row) == 0) {
 					if (1-((int)newPiece->orientation) > 0) {
@@ -83,7 +96,7 @@ void MovesTask(void) {
 					} else if (1-((int)newPiece->orientation) < 0) {
 						nextMove = handleMove(newPiece->id, CLOCKWISE, ROTATE, 0-(1-newPiece->orientation), nextMove);
 					}
-					nextMove = handleMove(newPiece->id, RIGHT, SLIDE, 5-newPiece->column, nextMove);
+					nextMove = handleMove(newPiece->id, RIGHT, SLIDE, 5-column, nextMove);
 					break;
 				}
 
@@ -91,8 +104,8 @@ void MovesTask(void) {
 					if (newPiece->orientation != 3) {
 						nextMove = handleMove(newPiece->id, COUNTERCLOCKWISE, ROTATE, 3-newPiece->orientation, nextMove);
 					}
-					direction = (newPiece->column < 4) ? RIGHT : LEFT;
-					times = (newPiece->column < 4) ? 4-newPiece->column : newPiece->column-4;
+					direction = (column < 4) ? RIGHT : LEFT;
+					times = (column < 4) ? 4-column : column-4;
 					nextMove = handleMove(newPiece->id, direction, SLIDE, times, nextMove);
 					break;
 				}
@@ -103,22 +116,18 @@ void MovesTask(void) {
 					} else if (newPiece->orientation != 1) {
 						nextMove = handleMove(newPiece->id, CLOCKWISE, ROTATE, 0-(1-newPiece->orientation), nextMove);
 					}
-					direction = (newPiece->column < 3) ? RIGHT : LEFT;
-					times = (newPiece->column < 3) ? 3-newPiece->column : newPiece->column-3;
+					direction = (column < 3) ? RIGHT : LEFT;
+					times = (column < 3) ? 3-column : column-3;
 					nextMove = handleMove(newPiece->id, direction, SLIDE, times, nextMove);
 					break;
 				}
 
 				if ((ScreenBitMap2 & row) == 0) {
 					if (newPiece->orientation != 3) {
-						if (newPiece->column != 5) {
-							nextMove = handleMove(newPiece->id, COUNTERCLOCKWISE, ROTATE, 3-newPiece->orientation, nextMove);
-						} else {
-							nextMove = handleMove(newPiece->id, CLOCKWISE, ROTATE, 3-newPiece->orientation, nextMove);
-						}
+						nextMove = handleMove(newPiece->id, COUNTERCLOCKWISE, ROTATE, 3-newPiece->orientation, nextMove);
 					}
-					direction = (newPiece->column < 2) ? RIGHT : LEFT;
-					times = (newPiece->column < 2) ? 2-newPiece->column : newPiece->column-2;
+					direction = (column < 2) ? RIGHT : LEFT;
+					times = (column < 2) ? 2-column : column-2;
 					nextMove = handleMove(newPiece->id, direction, SLIDE, times, nextMove);
 					break;
 				}
