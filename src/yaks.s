@@ -30,6 +30,12 @@ YKDispatcher:
 
 YKEnterMutex:
 
+		;push 	;ax
+		;pushf
+		;pop		;ax
+		;and		;ax, word 0x0200
+		;tst		;ax, word 0x0
+		;je
 		cli
 		ret
 

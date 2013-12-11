@@ -102,7 +102,7 @@ TCB* removePriorityQueue(PriorityQueue* queue) {
 		queue->size--;
 		queue->head = null;
 		queue->tail = null;
-		YKExitMutex();
+
 		return retValue;
 	}
 
@@ -113,7 +113,7 @@ TCB* removePriorityQueue(PriorityQueue* queue) {
 	queue->size--;
 	retValue->next = null;
 	retValue->prev = null;
-	YKExitMutex();
+
 	return retValue;	
 
 }

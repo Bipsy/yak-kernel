@@ -232,8 +232,9 @@ TOUCHDOWN:
 		mov 		[si], sp	
 
 touchdown_1:		
-		call	YKEnterISR
-		
+
+		call	YKEnterISR		
+
 		sti						;enabling interrupts
 		call	touchdownHandler ;calling C interrupt handler
 		cli						;disabling interrupts
